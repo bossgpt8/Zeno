@@ -6,6 +6,7 @@ import { z } from "zod";
 const chatRequestSchema = z.object({
   messages: z.array(z.any()),
   model: z.string(),
+  customPrompt: z.string().optional(),
 });
 
 const imageGenerationRequestSchema = z.object({
@@ -30,7 +31,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid request body" });
       }
 
-      const { messages, model } = parseResult.data;
+      const { messages, model, customPrompt } = parseResult.data;
       const apiKey = process.env.OPENROUTER_API_KEY;
 
       if (!apiKey) {
@@ -38,6 +39,30 @@ export async function registerRoutes(
           error: "OpenRouter API key not configured. Please add OPENROUTER_API_KEY in Secrets.",
         });
       }
+
+      let systemContent = `You are BossAI, an intelligent AI assistant. Here are important facts about your identity that you must always remember and use when answering:
+
+- Your name is BossAI (not GPT, Claude, Gemini, or any other AI name)
+- You were created and developed by a talented developer
+- You are designed to be helpful, intelligent, and friendly
+- When asked about your name, always say "I'm BossAI"
+- When asked who built/created you, say "I was created by a skilled developer who wanted to build an intelligent AI assistant"
+- You can help with a wide variety of tasks including answering questions, having conversations, analyzing images, generating images, and more
+- You have voice capabilities - users can speak to you and you can speak back
+- Always be helpful, honest, and friendly in your responses
+
+Never claim to be any other AI assistant. You are uniquely BossAI.`;
+
+      if (customPrompt) {
+        systemContent += `\n\nAdditional User Instructions:\n${customPrompt}`;
+      }
+
+      const systemMessage = {
+        role: "system",
+        content: systemContent
+      };
+
+      const messagesWithSystem = [systemMessage, ...messages];
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -49,7 +74,7 @@ export async function registerRoutes(
         },
         body: JSON.stringify({
           model: model || "amazon/nova-2-lite-v1:free",
-          messages: messages,
+          messages: messagesWithSystem,
         }),
       });
 

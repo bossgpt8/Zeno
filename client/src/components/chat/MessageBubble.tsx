@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Copy, Check, Volume2, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { Copy, Check, Volume2, ChevronLeft, ChevronRight, RotateCcw, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import type { Message } from "@shared/schema";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -13,6 +14,7 @@ interface MessageBubbleProps {
   isUser: boolean;
   onSpeak?: (text: string) => void;
   onRegenerate?: () => void;
+  onEdit?: (id: string, content: string) => void;
   branchCount?: number;
   currentBranch?: number;
   onBranchChange?: (index: number) => void;
@@ -23,13 +25,17 @@ export function MessageBubble({
   isUser,
   onSpeak,
   onRegenerate,
+  onEdit,
   branchCount = 1,
   currentBranch = 0,
   onBranchChange,
 }: MessageBubbleProps) {
   const [copied, setCopied] = useState(false);
   const [renderedContent, setRenderedContent] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(message.content);
   const contentRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const renderMarkdown = async () => {
@@ -77,10 +83,42 @@ export function MessageBubble({
     }
   }, [renderedContent]);
 
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      textareaRef.current.setSelectionRange(editContent.length, editContent.length);
+    }
+  }, [isEditing]);
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleStartEdit = () => {
+    setEditContent(message.content);
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditContent(message.content);
+  };
+
+  const handleSaveEdit = () => {
+    if (editContent.trim() && editContent !== message.content && onEdit) {
+      onEdit(message.id, editContent);
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      handleCancelEdit();
+    } else if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      handleSaveEdit();
+    }
   };
 
   return (
@@ -134,6 +172,18 @@ export function MessageBubble({
             )}
             
             <div className="ml-auto flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              {isUser && onEdit && !isEditing && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="w-7 h-7 md:w-8 md:h-8"
+                  onClick={handleStartEdit}
+                  data-testid="button-edit-message"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
+              )}
+              
               <Button
                 size="icon"
                 variant="ghost"
@@ -187,17 +237,53 @@ export function MessageBubble({
         </div>
       )}
       
-      <div 
-        ref={contentRef}
-        className="pl-11 md:pl-[52px] text-sm md:text-[15px] leading-relaxed text-foreground/90 prose prose-invert prose-sm max-w-none
-          prose-pre:bg-card prose-pre:border prose-pre:border-border prose-pre:rounded-xl prose-pre:p-4
-          prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-          prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-          prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:italic
-          prose-img:rounded-xl prose-img:max-w-full"
-        dangerouslySetInnerHTML={{ __html: isUser ? message.content : renderedContent }}
-        data-testid="text-message-content"
-      />
+      {isEditing ? (
+        <div className="pl-11 md:pl-[52px] space-y-2">
+          <Textarea
+            ref={textareaRef}
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="min-h-[80px] text-sm"
+            data-testid="textarea-edit-message"
+          />
+          <div className="flex gap-2 justify-end">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleCancelEdit}
+              data-testid="button-cancel-edit"
+            >
+              <X className="w-3.5 h-3.5 mr-1" />
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSaveEdit}
+              disabled={!editContent.trim() || editContent === message.content}
+              data-testid="button-save-edit"
+            >
+              <Check className="w-3.5 h-3.5 mr-1" />
+              Save
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Press Ctrl+Enter to save, Escape to cancel
+          </p>
+        </div>
+      ) : (
+        <div 
+          ref={contentRef}
+          className="pl-11 md:pl-[52px] text-sm md:text-[15px] leading-relaxed text-foreground/90 prose prose-invert prose-sm max-w-none
+            prose-pre:bg-card prose-pre:border prose-pre:border-border prose-pre:rounded-xl prose-pre:p-4
+            prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+            prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+            prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:italic
+            prose-img:rounded-xl prose-img:max-w-full"
+          dangerouslySetInnerHTML={{ __html: isUser ? message.content : renderedContent }}
+          data-testid="text-message-content"
+        />
+      )}
     </div>
   );
 }

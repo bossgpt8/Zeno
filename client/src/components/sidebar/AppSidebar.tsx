@@ -1,12 +1,22 @@
-import { Zap, Plus, User, LogOut } from "lucide-react";
+import { Zap, Plus, User, LogOut, Search, Settings, X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { ConversationList } from "./ConversationList";
 import { ModelSelector } from "./ModelSelector";
 import { useChatStore } from "@/lib/store";
 import { isFirebaseConfigured, signInWithGoogle, signOutUser } from "@/lib/firebase";
-import type { User as FirebaseUser } from "firebase/auth";
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -16,14 +26,24 @@ interface AppSidebarProps {
 export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const {
     user,
-    conversations,
     currentConversationId,
     currentModel,
+    searchQuery,
+    customSystemPrompt,
     setCurrentConversationId,
     setCurrentModel,
+    setSearchQuery,
+    setCustomSystemPrompt,
     createNewConversation,
     deleteConversation,
+    togglePinConversation,
+    getFilteredConversations,
   } = useChatStore();
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [tempPrompt, setTempPrompt] = useState(customSystemPrompt);
+
+  const conversations = getFilteredConversations();
 
   const handleNewChat = () => {
     createNewConversation();
@@ -49,6 +69,11 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     } catch (error) {
       console.error("Sign out error:", error);
     }
+  };
+
+  const handleSaveSystemPrompt = () => {
+    setCustomSystemPrompt(tempPrompt);
+    setSettingsOpen(false);
   };
 
   return (
@@ -77,23 +102,47 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           
           <Button
             onClick={handleNewChat}
-            className="w-full gap-2"
+            className="w-full gap-2 mb-3"
             data-testid="button-new-chat"
           >
             <Plus className="w-4 h-4" />
             New Chat
           </Button>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search chats..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-8"
+              data-testid="input-search-chats"
+            />
+            {searchQuery && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6"
+                onClick={() => setSearchQuery("")}
+                data-testid="button-clear-search"
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
         </div>
 
         <ScrollArea className="flex-1 p-3">
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2 mb-1">
-            Recent Chats
+            {searchQuery ? "Search Results" : "Chats"}
           </div>
           <ConversationList
             conversations={conversations}
             currentId={currentConversationId}
             onSelect={handleSelectConversation}
             onDelete={deleteConversation}
+            onTogglePin={togglePinConversation}
           />
         </ScrollArea>
 
@@ -135,7 +184,59 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             </div>
           )}
           
-          <ModelSelector value={currentModel} onChange={setCurrentModel} />
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <ModelSelector value={currentModel} onChange={setCurrentModel} />
+            </div>
+            <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  size="icon" 
+                  variant="outline"
+                  onClick={() => setTempPrompt(customSystemPrompt)}
+                  data-testid="button-settings"
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Custom Instructions</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="system-prompt">Custom System Prompt</Label>
+                    <Textarea
+                      id="system-prompt"
+                      placeholder="Add custom instructions for how BossAI should respond..."
+                      value={tempPrompt}
+                      onChange={(e) => setTempPrompt(e.target.value)}
+                      className="min-h-[150px]"
+                      data-testid="textarea-system-prompt"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      This will be added to every conversation to customize AI responses.
+                    </p>
+                  </div>
+                  <div className="flex gap-2 justify-end">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSettingsOpen(false)}
+                      data-testid="button-cancel-settings"
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={handleSaveSystemPrompt}
+                      data-testid="button-save-settings"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </aside>
     </>

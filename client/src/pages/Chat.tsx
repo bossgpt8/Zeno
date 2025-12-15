@@ -25,6 +25,7 @@ export default function Chat() {
     voiceEnabled,
     isRecording,
     sidebarOpen,
+    customSystemPrompt,
     setIsGenerating,
     addMessage,
     addImage,
@@ -270,7 +271,7 @@ export default function Chat() {
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: chatMessages, model: currentModel }),
+          body: JSON.stringify({ messages: chatMessages, model: currentModel, customPrompt: customSystemPrompt }),
         });
         
         const data = await response.json();
@@ -374,6 +375,7 @@ export default function Chat() {
                       isUser={message.role === "user"}
                       onSpeak={voiceEnabled ? speakText : undefined}
                       onRegenerate={message.role === "assistant" && message.id === messages[messages.length - 1]?.id ? handleRegenerate : undefined}
+                      onEdit={message.role === "user" ? (id, content) => useChatStore.getState().updateMessage(id, content) : undefined}
                     />
                   ))}
                   {isGenerating && <TypingIndicator />}

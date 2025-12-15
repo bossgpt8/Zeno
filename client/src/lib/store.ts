@@ -1,36 +1,47 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
-import type { Message, Conversation } from "@shared/schema";
+import type { Message } from "@shared/schema";
 import type { User } from "firebase/auth";
 
+interface Conversation {
+  id: string;
+  userId: string | null;
+  title: string;
+  messages: Message[];
+  model: string;
+  pinned?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface ChatState {
-  // User state
   user: User | null;
   setUser: (user: User | null) => void;
   
-  // Conversations
   conversations: Conversation[];
   currentConversationId: string | null;
   setConversations: (conversations: Conversation[]) => void;
   setCurrentConversationId: (id: string | null) => void;
   
-  // Messages for current conversation
   messages: Message[];
   setMessages: (messages: Message[]) => void;
   addMessage: (message: Message) => void;
   updateMessage: (id: string, content: string) => void;
   
-  // Branching
   currentBranchPath: Map<string, number>;
   setBranchIndex: (messageId: string, branchIndex: number) => void;
   getActiveBranch: () => Message[];
   
-  // Model selection
   currentModel: string;
   setCurrentModel: (model: string) => void;
   
-  // UI state
+  customSystemPrompt: string;
+  setCustomSystemPrompt: (prompt: string) => void;
+  
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  
   isGenerating: boolean;
   setIsGenerating: (generating: boolean) => void;
   attachedImages: string[];
@@ -44,20 +55,19 @@ interface ChatState {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   
-  // Conversation management
   createNewConversation: () => string;
   deleteConversation: (id: string) => void;
   updateConversationTitle: (id: string, title: string) => void;
+  togglePinConversation: (id: string) => void;
+  getFilteredConversations: () => Conversation[];
 }
 
 export const useChatStore = create<ChatState>()(
   persist(
     (set, get) => ({
-      // User state
       user: null,
       setUser: (user) => set({ user }),
       
-      // Conversations
       conversations: [],
       currentConversationId: null,
       setConversations: (conversations) => set({ conversations }),
@@ -70,12 +80,10 @@ export const useChatStore = create<ChatState>()(
         });
       },
       
-      // Messages
       messages: [],
       setMessages: (messages) => set({ messages }),
       addMessage: (message) => set((state) => {
         const newMessages = [...state.messages, message];
-        // Update the current conversation
         const updatedConversations = state.conversations.map(c => 
           c.id === state.currentConversationId 
             ? { ...c, messages: newMessages, updatedAt: new Date() }
@@ -95,7 +103,6 @@ export const useChatStore = create<ChatState>()(
         return { messages: newMessages, conversations: updatedConversations };
       }),
       
-      // Branching
       currentBranchPath: new Map(),
       setBranchIndex: (messageId, branchIndex) => set((state) => {
         const newPath = new Map(state.currentBranchPath);
@@ -107,7 +114,6 @@ export const useChatStore = create<ChatState>()(
         const result: Message[] = [];
         let currentParentId: string | null = null;
         
-        // Group messages by parentId
         const messagesByParent = new Map<string | null, Message[]>();
         for (const msg of messages) {
           const parentId = msg.parentId ?? null;
@@ -117,7 +123,6 @@ export const useChatStore = create<ChatState>()(
           messagesByParent.get(parentId)!.push(msg);
         }
         
-        // Build the active branch
         while (true) {
           const children = messagesByParent.get(currentParentId) || [];
           if (children.length === 0) break;
@@ -131,11 +136,15 @@ export const useChatStore = create<ChatState>()(
         return result;
       },
       
-      // Model selection
       currentModel: "amazon/nova-2-lite-v1:free",
       setCurrentModel: (model) => set({ currentModel: model }),
       
-      // UI state
+      customSystemPrompt: "",
+      setCustomSystemPrompt: (prompt) => set({ customSystemPrompt: prompt }),
+      
+      searchQuery: "",
+      setSearchQuery: (query) => set({ searchQuery: query }),
+      
       isGenerating: false,
       setIsGenerating: (generating) => set({ isGenerating: generating }),
       attachedImages: [],
@@ -153,7 +162,6 @@ export const useChatStore = create<ChatState>()(
       sidebarOpen: false,
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
       
-      // Conversation management
       createNewConversation: () => {
         const id = nanoid();
         const newConversation: Conversation = {
@@ -162,6 +170,7 @@ export const useChatStore = create<ChatState>()(
           title: "New Chat",
           messages: [],
           model: get().currentModel,
+          pinned: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -191,6 +200,32 @@ export const useChatStore = create<ChatState>()(
           c.id === id ? { ...c, title } : c
         ),
       })),
+      togglePinConversation: (id) => set((state) => ({
+        conversations: state.conversations.map(c => 
+          c.id === id ? { ...c, pinned: !c.pinned } : c
+        ),
+      })),
+      getFilteredConversations: () => {
+        const { conversations, searchQuery } = get();
+        if (!searchQuery.trim()) {
+          return [...conversations].sort((a, b) => {
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          });
+        }
+        const query = searchQuery.toLowerCase();
+        return conversations
+          .filter(c => 
+            c.title.toLowerCase().includes(query) ||
+            c.messages.some(m => m.content.toLowerCase().includes(query))
+          )
+          .sort((a, b) => {
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          });
+      },
     }),
     {
       name: "bossai-storage",
@@ -199,6 +234,7 @@ export const useChatStore = create<ChatState>()(
         currentConversationId: state.currentConversationId,
         currentModel: state.currentModel,
         voiceEnabled: state.voiceEnabled,
+        customSystemPrompt: state.customSystemPrompt,
       }),
     }
   )
