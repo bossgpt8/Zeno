@@ -326,8 +326,12 @@ export default function Chat() {
       recognitionRef.current.stop();
       setIsRecording(false);
     } else {
-      recognitionRef.current.start();
-      setIsRecording(true);
+      try {
+        recognitionRef.current.start();
+        setIsRecording(true);
+      } catch (error) {
+        setIsRecording(false);
+      }
     }
   };
 
