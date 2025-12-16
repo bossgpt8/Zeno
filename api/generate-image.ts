@@ -36,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: `Invalid image model ID: ${modelId}` });
     }
 
-    const API_URL = `https://api-inference.huggingface.co/models/${selectedHFModel}`;
+    const API_URL = `https://router.huggingface.co/hf-inference/models/${selectedHFModel}`;
     let parameters: Record<string, any> = {};
 
     if (modelId === 'Tongyi-MAI/Z-Image-Turbo') {

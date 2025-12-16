@@ -7,6 +7,8 @@ import { WelcomeScreen } from "@/components/chat/WelcomeScreen";
 import { MessageBubble } from "@/components/chat/MessageBubble";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { TypingIndicator } from "@/components/chat/TypingIndicator";
+import { VoiceRecordingOverlay } from "@/components/chat/VoiceRecordingOverlay";
+import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { ChatHeader } from "@/components/header/ChatHeader";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { useChatStore } from "@/lib/store";
@@ -26,6 +28,8 @@ export default function Chat() {
     isRecording,
     sidebarOpen,
     customSystemPrompt,
+    hasSeenOnboarding,
+    setHasSeenOnboarding,
     setIsGenerating,
     addMessage,
     addImage,
@@ -44,6 +48,21 @@ export default function Chat() {
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  useEffect(() => {
+    if (!hasSeenOnboarding) {
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasSeenOnboarding]);
+  
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    setHasSeenOnboarding(true);
+  };
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -408,6 +427,16 @@ export default function Chat() {
           onToggleRecording={handleToggleRecording}
         />
       </main>
+      
+      <VoiceRecordingOverlay 
+        isRecording={isRecording} 
+        onStop={handleToggleRecording} 
+      />
+      
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={handleCloseOnboarding} 
+      />
     </div>
   );
 }

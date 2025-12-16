@@ -19,6 +19,9 @@ interface ChatState {
   user: User | null;
   setUser: (user: User | null) => void;
   
+  hasSeenOnboarding: boolean;
+  setHasSeenOnboarding: (seen: boolean) => void;
+  
   conversations: Conversation[];
   currentConversationId: string | null;
   setConversations: (conversations: Conversation[]) => void;
@@ -67,6 +70,9 @@ export const useChatStore = create<ChatState>()(
     (set, get) => ({
       user: null,
       setUser: (user) => set({ user }),
+      
+      hasSeenOnboarding: false,
+      setHasSeenOnboarding: (seen) => set({ hasSeenOnboarding: seen }),
       
       conversations: [],
       currentConversationId: null,
@@ -235,6 +241,7 @@ export const useChatStore = create<ChatState>()(
         currentModel: state.currentModel,
         voiceEnabled: state.voiceEnabled,
         customSystemPrompt: state.customSystemPrompt,
+        hasSeenOnboarding: state.hasSeenOnboarding,
       }),
     }
   )
