@@ -35,7 +35,7 @@ export const conversations = pgTable("conversations", {
   userId: varchar("user_id", { length: 128 }),
   title: text("title").notNull().default("New Chat"),
   messages: jsonb("messages").$type<Message[]>().default([]),
-  model: text("model").default("amazon/nova-2-lite-v1:free"),
+  model: text("model").default("meta-llama/llama-3.1-405b-instruct:free"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

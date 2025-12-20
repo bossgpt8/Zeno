@@ -408,7 +408,7 @@ export default function Chat() {
             <Button
               size="icon"
               variant="secondary"
-              className="absolute bottom-4 right-4 rounded-full shadow-lg z-10 animate-bounce"
+              className="absolute bottom-6 right-6 rounded-full shadow-lg z-10 hover:scale-110 transition-transform"
               onClick={scrollToBottom}
               data-testid="button-scroll-down"
             >

@@ -142,7 +142,7 @@ export const useChatStore = create<ChatState>()(
         return result;
       },
       
-      currentModel: "amazon/nova-2-lite-v1:free",
+      currentModel: "meta-llama/llama-3.1-405b-instruct:free",
       setCurrentModel: (model) => set({ currentModel: model }),
       
       customSystemPrompt: "",

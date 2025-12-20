@@ -56,20 +56,6 @@ export function ChatHeader({
         </div>
         
         <div className="flex items-center gap-1 md:gap-2">
-          <Button
-            size="icon"
-            variant={voiceEnabled ? "default" : "ghost"}
-            onClick={onToggleVoice}
-            title={voiceEnabled ? "Disable voice responses" : "Enable voice responses"}
-            data-testid="button-toggle-voice"
-          >
-            {voiceEnabled ? (
-              <Volume2 className="w-4 h-4 md:w-5 md:h-5" />
-            ) : (
-              <VolumeX className="w-4 h-4 md:w-5 md:h-5" />
-            )}
-          </Button>
-          
           <Popover>
             <PopoverTrigger asChild>
               <Button
