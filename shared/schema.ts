@@ -51,10 +51,13 @@ export type Conversation = typeof conversations.$inferSelect;
 // AI Models configuration
 export const AI_MODELS = {
   vision: [
-    { id: "google/gemma-3-12b-it:free", name: "Gemma-12b", description: "Vision capable" },
-    { id: "google/gemma-3-4b-it:free", name: "Gemma-4b", description: "Vision lightweight" },
-    { id: "qwen/qwen2.5-vl-7b-instruct:free", name: "Qwen-VL-7B", description: "Video & image vision" },
-    { id: "google/gemma-3n-12b-it:free", name: "Gemma-3n-12B", description: "Efficient vision" },
+    { id: "nvidia/nemotron-nano-4b-vision-instruct:free", name: "Nemotron Nano 12B VL", description: "NVIDIA multimodal - video & documents" },
+    { id: "google/gemini-2.0-flash-exp:free", name: "Gemini 2.0 Flash", description: "Google's fastest multimodal" },
+    { id: "google/gemma-3-27b-it:free", name: "Gemma 3 27B", description: "Vision with 128K context" },
+    { id: "mistralai/mistral-small-3.1-24b:free", name: "Mistral Small 3.1 24B", description: "Vision with 128K context" },
+    { id: "qwen/qwen2.5-vl-7b-instruct:free", name: "Qwen 2.5 VL 7B", description: "20min+ video understanding" },
+    { id: "google/gemma-3-12b-it:free", name: "Gemma 3 12B", description: "Vision capable" },
+    { id: "google/gemma-3-4b-it:free", name: "Gemma 3 4B", description: "Vision lightweight" },
   ],
   text: [
     { id: "meta-llama/llama-3.3-70b-instruct:free", name: "Llama 3.3 70B", description: "Smart and efficient" },
