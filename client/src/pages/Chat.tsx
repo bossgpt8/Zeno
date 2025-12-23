@@ -32,6 +32,7 @@ export default function Chat() {
     setHasSeenOnboarding,
     setIsGenerating,
     addMessage,
+    updateMessage,
     addImage,
     removeImage,
     clearImages,
@@ -254,8 +255,7 @@ export default function Chat() {
                   const content = parsed.content || "";
                   if (content) {
                     fullContent += content;
-                    assistantMessage.content = fullContent;
-                    addMessage(assistantMessage);
+                    updateMessage(assistantMessage.id, fullContent);
                   }
                 } catch {}
               }
