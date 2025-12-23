@@ -265,7 +265,7 @@ export default function Chat() {
           speakText("I've generated an image for you!");
         }
       } else {
-        // Chat completion
+        // Chat completion with streaming
         const chatMessages = [
           ...messages.map((m) => ({
             role: m.role,
@@ -293,23 +293,56 @@ export default function Chat() {
           body: JSON.stringify({ messages: chatMessages, model: currentModel, customPrompt: customSystemPrompt }),
         });
         
-        const data = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to get response");
         }
-        
+
+        let fullContent = "";
         const assistantMessage: Message = {
           id: nanoid(),
           role: "assistant",
-          content: data.content,
+          content: "",
           timestamp: Date.now(),
           parentId: userMessage.id,
         };
+
         addMessage(assistantMessage);
-        
-        if (voiceEnabled) {
-          speakText(data.content);
+
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder();
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            const lines = chunk.split("\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  const content = parsed.content || "";
+                  if (content) {
+                    fullContent += content;
+                    assistantMessage.content = fullContent;
+                    addMessage(assistantMessage);
+                  }
+                } catch {}
+              }
+            }
+          }
+        } catch (error) {
+          throw error;
+        }
+
+        if (voiceEnabled && fullContent) {
+          speakText(fullContent);
         }
       }
     } catch (error: any) {

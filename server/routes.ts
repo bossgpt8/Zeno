@@ -88,18 +88,50 @@ RESPONSE STYLE:
         body: JSON.stringify({
           model: model || "meta-llama/llama-3.3-70b-instruct:free",
           messages: messagesWithSystem,
+          stream: true,
         }),
       });
 
-      const data = await response.json();
-
-      if (data.error) {
-        return res.status(500).json({ error: data.error.message || "API Error" });
+      if (!response.ok) {
+        const errorData = await response.json();
+        return res.status(response.status).json({ error: errorData.error?.message || "API Error" });
       }
 
-      return res.json({
-        content: data.choices?.[0]?.message?.content || "No response generated",
-      });
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split("\n");
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") {
+                res.write("data: [DONE]\n\n");
+                continue;
+              }
+              try {
+                const parsed = JSON.parse(data);
+                const content = parsed.choices?.[0]?.delta?.content || "";
+                if (content) {
+                  res.write(`data: ${JSON.stringify({ content })}\n\n`);
+                }
+              } catch {}
+            }
+          }
+        }
+      } finally {
+        res.end();
+      }
     } catch (error: any) {
       console.error("Chat API error:", error);
       return res.status(500).json({ error: "Failed to process request" });
