@@ -1,0 +1,20 @@
+stabilityai/stable-diffusion-xl-base-1.0: A widely used and powerful base model for high-quality text-to-image generation.
+stabilityai/sdxl-turbo: A faster version of SDXL designed for real-time image generation with fewer steps.
+stabilityai/stable-diffusion-v1-5: One of the initial popular Stable Diffusion models, still widely used due to its versatility and large ecosystem of fine-tuned versions.
+black-forest-labs/FLUX.1-schnell: A high-speed, state-of-the-art model known for its efficiency.
+cagliostrolab/animagine-xl-4.0: A highly popular model specifically fine-tuned for generating high-quality anime-style images.
+SimianLuo/LCM_Dreamshaper_v7: Utilizes Latent Consistency Models (LCM) to drastically speed up image generation.
+lllyasviel/control_v11p_sd15_canny: A ControlNet model for Stable Diffusion 1.5, allowing precise control over image composition using edge detection maps.
+Qwen/Qwen-Image: A high-performing image generation model developed by the Qwen team.
+microsoft/Florence-2-large: A multimodal model (image-to-text, etc.) that can also handle image-related tasks like prompt generation.
+bytedance-research/UNO: An "Any-to-Any" model for versatile image generation and manipulation.
+tencent/HunyuanImage-2.1: An advanced model for text-to-image tasks.
+HiDream-ai/HiDream-I1-Fast: A fast text-to-image model.
+`` (sdxl-lightning, sdxl-turbo variants, etc.): Numerous community-fine-tuned, faster versions of popular models exist across the Hub.
+digiplay/majicmix-realistic-v2: (General category) A community model focused on highly realistic image generation.
+emilianJR/anything-v4.0: (General category) A popular model specialized in anime and artistic styles.
+WarriorMama777/OrangeMixs: (General category) A collection of models favored for anime-style generation.
+runwayml/stable-diffusion-v1-5: The official Runway release of the SD 1.5 model.
+stabilityai/stable-diffusion-2-1: An iteration offering improvements over the v1.5 base model (found by filtering the Hugging Face models list).
+hakurei/waifu-diffusion: A widely-used model specifically for generating anime content.
+gsdf/Counterfeit-V2.5: Another community-favorite model for high-quality illustration/anime style generation. 
