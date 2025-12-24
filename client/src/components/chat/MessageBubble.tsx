@@ -150,9 +150,12 @@ export function MessageBubble({
         
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 md:gap-3 mb-2">
-            <span className="text-sm font-bold text-foreground">
-              {isUser ? userName : "BossAI"}
-            </span>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold text-foreground">
+                {isUser ? userName : "BossAI"}
+              </span>
+              {isUser && <span className="text-xs text-muted-foreground">(you)</span>}
+            </div>
             
             {branchCount > 1 && (
               <div className="flex items-center gap-1">

@@ -1,4 +1,4 @@
-import { Menu, Moon, Sun, Palette } from "lucide-react";
+import { Menu, Moon, Sun, Palette, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,6 +9,7 @@ import {
 import { useTheme, ACCENT_COLORS } from "@/components/ThemeProvider";
 import { AI_MODELS } from "@shared/schema";
 import bossaiRobot from "@assets/bossai-robot.png";
+import { useLocation } from "wouter";
 
 interface ChatHeaderProps {
   currentModel: string;
@@ -24,6 +25,7 @@ export function ChatHeader({
   onToggleSidebar,
 }: ChatHeaderProps) {
   const { theme, accentColor, toggleTheme, setAccentColor } = useTheme();
+  const [, setLocation] = useLocation();
   
   const getModelName = (modelId: string): string => {
     for (const category of Object.values(AI_MODELS)) {
@@ -60,6 +62,16 @@ export function ChatHeader({
         </div>
         
         <div className="flex items-center gap-1 md:gap-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setLocation("/settings")}
+            title="Settings"
+            data-testid="button-settings"
+          >
+            <Settings className="w-4 h-4 md:w-5 md:h-5" />
+          </Button>
+
           <Popover>
             <PopoverTrigger asChild>
               <Button

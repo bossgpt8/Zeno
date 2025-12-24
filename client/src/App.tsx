@@ -8,12 +8,14 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { useChatStore } from "@/lib/store";
 import { subscribeToAuth } from "@/lib/firebase";
 import Chat from "@/pages/Chat";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Chat} />
+      <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );

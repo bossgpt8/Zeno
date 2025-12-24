@@ -22,6 +22,9 @@ interface ChatState {
   userName: string;
   setUserName: (name: string) => void;
   
+  userGender: string;
+  setUserGender: (gender: string) => void;
+  
   hasSeenOnboarding: boolean;
   setHasSeenOnboarding: (seen: boolean) => void;
   
@@ -79,6 +82,9 @@ export const useChatStore = create<ChatState>()(
       
       userName: "User",
       setUserName: (name) => set({ userName: name }),
+      
+      userGender: "",
+      setUserGender: (gender) => set({ userGender: gender }),
       
       hasSeenOnboarding: false,
       setHasSeenOnboarding: (seen) => set({ hasSeenOnboarding: seen }),

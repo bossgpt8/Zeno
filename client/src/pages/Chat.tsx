@@ -21,6 +21,7 @@ export default function Chat() {
   const {
     user,
     userName,
+    userGender,
     messages,
     currentConversationId,
     currentModel,
@@ -236,7 +237,13 @@ export default function Chat() {
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: chatMessages, model: currentModel, customPrompt: customSystemPrompt }),
+          body: JSON.stringify({ 
+            messages: chatMessages, 
+            model: currentModel, 
+            customPrompt: customSystemPrompt,
+            userName,
+            userGender,
+          }),
         });
         
         if (!response.ok) {
