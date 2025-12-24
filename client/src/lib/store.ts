@@ -260,6 +260,9 @@ export const useChatStore = create<ChatState>()(
         voiceEnabled: state.voiceEnabled,
         customSystemPrompt: state.customSystemPrompt,
         hasSeenOnboarding: state.hasSeenOnboarding,
+        hasSeenSettings: state.hasSeenSettings,
+        userName: state.userName,
+        userGender: state.userGender,
       }),
     }
   )
