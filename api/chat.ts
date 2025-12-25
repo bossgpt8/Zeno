@@ -63,7 +63,7 @@ RESPONSE STYLE:
         'X-Title': 'BossAI',
       },
       body: JSON.stringify({
-        model: model || 'amazon/nova-2-lite-v1:free',
+        model: model || 'meta-llama/llama-3.3-70b-instruct:free',
         messages: messagesWithSystem,
       }),
     });

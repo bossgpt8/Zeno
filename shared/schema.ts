@@ -51,8 +51,12 @@ export type Conversation = typeof conversations.$inferSelect;
 // AI Models configuration
 export const AI_MODELS = {
   vision: [
-    { id: "google/gemini-2.0-flash-exp:free", name: "Gemini 2.0 Flash", description: "Google's fastest multimodal" },
-    { id: "mistralai/mistral-small-3.1-24b:free", name: "Mistral Small 3.1", description: "Vision with 128K context" },
+    { id: "nvidia/nemotron-nano-12b-v2-vl:free", name: "Nemotron Nano 12B 2 VL", description: "NVIDIA multimodal - video & documents" },
+    { id: "google/gemma-3-27b-it:free", name: "Gemma 3 27B", description: "Vision with 131K context" },
+    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small 3.1", description: "Vision with 128K context" },
+    { id: "qwen/qwen-2.5-vl-7b-instruct:free", name: "Qwen 2.5 VL 7B", description: "Video understanding" },
+    { id: "google/gemma-3-12b-it:free", name: "Gemma 3 12B", description: "Vision with 32K context" },
+    { id: "google/gemma-3-4b-it:free", name: "Gemma 3 4B", description: "Lightweight vision" },
   ],
   text: [
     { id: "meta-llama/llama-3.3-70b-instruct:free", name: "Llama 3.3 70B", description: "Smart and efficient" },
@@ -68,7 +72,6 @@ export const AI_MODELS = {
     { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small 3.1", description: "Efficient and capable" },
     { id: "meta-llama/llama-3.2-3b-instruct:free", name: "Llama 3.2 3B", description: "Lightweight model" },
     { id: "nousresearch/hermes-3-llama-3.1-405b:free", name: "Hermes 3 Llama 3.1 405B", description: "Research optimized" },
-    { id: "google/gemini-2.0-flash-exp:free", name: "Gemini 2.0 Flash", description: "Google's latest" },
   ],
   image: [
     { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell", description: "Best quality - fastest" },
