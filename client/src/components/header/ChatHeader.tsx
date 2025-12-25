@@ -32,7 +32,7 @@ export function ChatHeader({
       const model = category.find((m) => m.id === modelId);
       if (model) return model.name;
     }
-    return "Unknown";
+    return "Llama 3.3 70B";
   };
 
   return (
