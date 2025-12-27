@@ -16,19 +16,11 @@ const imageGenerationRequestSchema = z.object({
   modelId: z.string(),
 });
 
+// Model mappings must match AI_MODELS in shared/schema.ts
 const HF_MODEL_MAP: Record<string, string> = {
   "black-forest-labs/FLUX.1-schnell": "black-forest-labs/FLUX.1-schnell",
-  "stabilityai/stable-diffusion-3-medium": "stabilityai/stable-diffusion-3-medium",
-  "kandinsky-community/kandinsky-3": "kandinsky-community/kandinsky-3",
   "stabilityai/stable-diffusion-xl-base-1.0": "stabilityai/stable-diffusion-xl-base-1.0",
-  "stabilityai/stable-diffusion-xl-turbo": "stabilityai/stable-diffusion-xl-turbo",
-  "stabilityai/stable-diffusion-2.1": "stabilityai/stable-diffusion-2.1",
-  "runwayml/stable-diffusion-v1-5": "runwayml/stable-diffusion-v1-5",
-  "Tongyi-MAI/Z-Image-Turbo": "Tongyi-MAI/Z-Image-Turbo",
-  "dreamlike-art/dreamlike-photoreal-2.0": "dreamlike-art/dreamlike-photoreal-2.0",
-  "SG161222/Realistic_Vision_V5.1_noVAE": "SG161222/Realistic_Vision_V5.1_noVAE",
-  "eimiss/OrangeMix3-rev": "eimiss/OrangeMix3-rev",
-  "stablediffusionapi/rev-animated": "stablediffusionapi/rev-animated",
+  "stabilityai/stable-diffusion-v1-5": "stabilityai/stable-diffusion-v1-5",
 };
 
 export async function registerRoutes(
@@ -184,29 +176,11 @@ ONLY mention your name/identity when specifically asked (e.g., "what is your nam
         case "black-forest-labs/FLUX.1-schnell":
           parameters = { num_inference_steps: 4, guidance_scale: 0.0, negative_prompt: "blurry, low quality" };
           break;
-        case "stabilityai/stable-diffusion-3-medium":
-          parameters = { num_inference_steps: 40, guidance_scale: 7.5, negative_prompt: "blurry, low quality, bad anatomy, bad text" };
+        case "stabilityai/stable-diffusion-xl-base-1.0":
+          parameters = { num_inference_steps: 30, guidance_scale: 7.5, negative_prompt: "blurry, low quality, distorted, bad anatomy" };
           break;
-        case "kandinsky-community/kandinsky-3":
-          parameters = { num_inference_steps: 25, guidance_scale: 10.0, negative_prompt: "blurry, low quality" };
-          break;
-        case "stabilityai/stable-diffusion-xl-turbo":
-          parameters = { num_inference_steps: 1, guidance_scale: 0.0, negative_prompt: "blurry, low quality" };
-          break;
-        case "stabilityai/stable-diffusion-2.1":
-          parameters = { num_inference_steps: 25, guidance_scale: 7.5, negative_prompt: "blurry, low quality, bad anatomy" };
-          break;
-        case "Tongyi-MAI/Z-Image-Turbo":
-          parameters = { num_inference_steps: 9, guidance_scale: 0.0, negative_prompt: "blurry, low quality, bad text, watermark" };
-          break;
-        case "dreamlike-art/dreamlike-photoreal-2.0":
-          parameters = { num_inference_steps: 35, guidance_scale: 9.0, negative_prompt: "blurry, low quality, bad anatomy, bad hands" };
-          break;
-        case "SG161222/Realistic_Vision_V5.1_noVAE":
-          parameters = { num_inference_steps: 30, guidance_scale: 8.0, negative_prompt: "blurry, low quality, bad anatomy, distorted" };
-          break;
-        case "stablediffusionapi/rev-animated":
-          parameters = { num_inference_steps: 30, guidance_scale: 7.5, negative_prompt: "blurry, low quality, bad anatomy" };
+        case "stabilityai/stable-diffusion-v1-5":
+          parameters = { num_inference_steps: 30, guidance_scale: 7.5, negative_prompt: "blurry, low quality, bad anatomy, distorted" };
           break;
         default:
           parameters = { num_inference_steps: 30, guidance_scale: 7.5, negative_prompt: "blurry, low quality, distorted, bad anatomy" };
