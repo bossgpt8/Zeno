@@ -87,12 +87,13 @@ ONLY mention your name/identity when specifically asked (e.g., "what is your nam
 
       const messagesWithSystem = [systemMessage, ...messages];
 
+      const refererUrl = req.headers['origin'] || req.headers['referer'] || "https://bossai.example.com";
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://bossai.replit.app",
+          "HTTP-Referer": refererUrl,
           "X-Title": "BossAI",
         },
         body: JSON.stringify({
