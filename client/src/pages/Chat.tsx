@@ -54,6 +54,7 @@ export default function Chat() {
     setUserName,
     setUserAvatar,
     setUserPersonality,
+    setUserGender,
     setIsGenerating,
     addMessage,
     updateMessage,
