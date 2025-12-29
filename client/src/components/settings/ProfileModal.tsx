@@ -15,14 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import avatar1 from "@assets/stock_images/astronaut_avatar_nas_d6106021.jpg";
+import avatar2 from "@assets/stock_images/astronaut_avatar_nas_bc39255e.jpg";
+import avatar3 from "@assets/stock_images/astronaut_avatar_nas_d931e821.jpg";
 
 const AVATAR_OPTIONS = [
-  { id: "avatar-1", label: "Blue", color: "bg-blue-500" },
-  { id: "avatar-2", label: "Purple", color: "bg-purple-500" },
-  { id: "avatar-3", label: "Green", color: "bg-green-500" },
-  { id: "avatar-4", label: "Orange", color: "bg-orange-500" },
-  { id: "avatar-5", label: "Pink", color: "bg-pink-500" },
-  { id: "avatar-6", label: "Cyan", color: "bg-cyan-500" },
+  { id: "avatar-1", label: "Astronaut 1", image: avatar1 },
+  { id: "avatar-2", label: "Astronaut 2", image: avatar2 },
+  { id: "avatar-3", label: "Astronaut 3", image: avatar3 },
 ];
 
 const PERSONALITY_OPTIONS = [
@@ -62,8 +62,6 @@ export function ProfileModal({
     }
   };
 
-  const selectedAvatarOption = AVATAR_OPTIONS.find(a => a.id === avatar);
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -87,17 +85,27 @@ export function ProfileModal({
           </div>
 
           <div className="space-y-3">
-            <label className="text-sm font-medium text-foreground">Avatar Color</label>
-            <div className="grid grid-cols-6 gap-2">
+            <label className="text-sm font-medium text-foreground">Your Avatar</label>
+            <div className="grid grid-cols-3 gap-3">
               {AVATAR_OPTIONS.map((option) => (
                 <button
                   key={option.id}
                   type="button"
                   onClick={() => setAvatar(option.id)}
-                  className={`w-10 h-10 rounded-full transition-all border-2 ${selectedAvatarOption?.id === option.id ? "border-foreground scale-110" : "border-transparent"} ${option.color}`}
+                  className={`relative w-20 h-20 rounded-2xl overflow-hidden transition-all border-2 ${
+                    avatar === option.id 
+                      ? "border-primary scale-105" 
+                      : "border-border"
+                  }`}
                   title={option.label}
                   data-testid={`button-avatar-${option.id}`}
-                />
+                >
+                  <img 
+                    src={option.image} 
+                    alt={option.label}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
               ))}
             </div>
           </div>
