@@ -407,15 +407,6 @@ export default function Chat() {
         description: errorDescription,
         variant: "destructive",
       });
-
-      const errorMessage: Message = {
-        id: nanoid(),
-        role: "assistant",
-        content: errorDescription,
-        timestamp: Date.now(),
-        parentId: userMessage.id,
-      };
-      addMessage(errorMessage);
     } finally {
       setIsGenerating(false);
     }
