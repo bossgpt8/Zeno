@@ -135,7 +135,7 @@ export default function Settings() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Prefer not to say</SelectItem>
+                  <SelectItem value="not-specified">Prefer not to say</SelectItem>
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="non-binary">Non-binary</SelectItem>
