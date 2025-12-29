@@ -143,7 +143,7 @@ export default function Chat() {
       recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
         setIsRecording(false);
-        if (event.error !== "no-speech" && event.error !== "audio-capture") {
+        if (event.error !== "no-speech" && event.error !== "audio-capture" && event.error !== "aborted") {
           toast({
             title: "Voice Error",
             description: "Could not recognize speech. Please try again.",
@@ -154,6 +154,10 @@ export default function Chat() {
 
       recognitionRef.current.onend = () => {
         setIsRecording(false);
+        // Reset recognition object to allow reuse
+        try {
+          recognitionRef.current?.abort();
+        } catch {}
       };
     }
 
@@ -388,15 +392,64 @@ export default function Chat() {
 
     if (isRecording) {
       try {
+        recognitionRef.current.abort();
         recognitionRef.current.stop();
       } catch {}
       setIsRecording(false);
     } else {
       try {
-        recognitionRef.current.start();
+        // Create fresh recognition object if current one is not in a good state
+        const SpeechRecognition =
+          (window as any).SpeechRecognition ||
+          (window as any).webkitSpeechRecognition;
+        
+        if (SpeechRecognition && recognitionRef.current) {
+          recognitionRef.current.start();
+        }
       } catch (error) {
         console.error("Error starting speech recognition:", error);
         setIsRecording(false);
+        
+        // Try to reinitialize if start fails
+        try {
+          const SpeechRecognition =
+            (window as any).SpeechRecognition ||
+            (window as any).webkitSpeechRecognition;
+          if (SpeechRecognition) {
+            const newRecognition = new SpeechRecognition();
+            newRecognition.continuous = false;
+            newRecognition.interimResults = false;
+            newRecognition.lang = "en-US";
+            recognitionRef.current = newRecognition;
+            
+            // Re-attach all event handlers
+            newRecognition.onstart = () => setIsRecording(true);
+            newRecognition.onresult = (event: any) => {
+              try {
+                if (event.results && event.results.length > 0) {
+                  const transcript = event.results[event.results.length - 1][0].transcript;
+                  if (transcript && transcript.trim()) {
+                    handleSendMessage(transcript, []);
+                  }
+                }
+              } catch (error) {
+                console.error("Error processing speech result:", error);
+              }
+              setIsRecording(false);
+            };
+            newRecognition.onerror = (event: any) => {
+              console.error("Speech recognition error:", event.error);
+              setIsRecording(false);
+            };
+            newRecognition.onend = () => {
+              setIsRecording(false);
+            };
+            
+            newRecognition.start();
+          }
+        } catch (reinitError) {
+          console.error("Error reinitializing speech recognition:", reinitError);
+        }
       }
     }
   };
