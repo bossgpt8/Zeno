@@ -1,4 +1,12 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AI_MODELS } from "@shared/schema";
 
 interface ModelSelectorProps {
@@ -7,6 +15,8 @@ interface ModelSelectorProps {
 }
 
 export function ModelSelector({ value, onChange }: ModelSelectorProps) {
+  const [open, setOpen] = useState(false);
+
   const getModelName = (modelId: string): string => {
     for (const category of Object.values(AI_MODELS)) {
       const model = category.find((m) => m.id === modelId);
@@ -15,58 +25,66 @@ export function ModelSelector({ value, onChange }: ModelSelectorProps) {
     return "Llama 3.3 70B";
   };
 
+  const handleSelectModel = (modelId: string) => {
+    onChange(modelId);
+    setOpen(false);
+  };
+
+  const categories = [
+    { key: "vision", label: "Vision Capable", models: AI_MODELS.vision },
+    { key: "text", label: "Text Only", models: AI_MODELS.text },
+    { key: "image", label: "Image Generation", models: AI_MODELS.image },
+    { key: "code", label: "Code Generation", models: AI_MODELS.code },
+  ];
+
   return (
-    <div>
-      <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+    <div className="space-y-2">
+      <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">
         AI Model
       </label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger 
-          className="w-full bg-card border-card-border"
-          data-testid="select-model"
-        >
-          <SelectValue placeholder="Select model">
-            {getModelName(value)}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel className="text-xs text-muted-foreground">Vision Capable (Understand Images)</SelectLabel>
-            {AI_MODELS.vision.map((model) => (
-              <SelectItem key={model.id} value={model.id} data-testid={`option-model-${model.name.toLowerCase()}`}>
-                {model.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-          
-          <SelectGroup>
-            <SelectLabel className="text-xs text-muted-foreground">Text Only (General Tasks)</SelectLabel>
-            {AI_MODELS.text.map((model) => (
-              <SelectItem key={model.id} value={model.id} data-testid={`option-model-${model.name.toLowerCase()}`}>
-                {model.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-          
-          <SelectGroup>
-            <SelectLabel className="text-xs text-muted-foreground">Image Generation</SelectLabel>
-            {AI_MODELS.image.map((model) => (
-              <SelectItem key={model.id} value={model.id} data-testid={`option-model-${model.name.toLowerCase()}`}>
-                {model.name} ({model.description})
-              </SelectItem>
-            ))}
-          </SelectGroup>
-          
-          <SelectGroup>
-            <SelectLabel className="text-xs text-muted-foreground">Code Generation</SelectLabel>
-            {AI_MODELS.code.map((model) => (
-              <SelectItem key={model.id} value={model.id} data-testid={`option-model-${model.name.toLowerCase()}`}>
-                {model.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-full justify-between text-sm h-9"
+            data-testid="button-model-selector"
+          >
+            <span className="truncate">{getModelName(value)}</span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64 p-0" align="start">
+          <ScrollArea className="h-96">
+            <div className="p-3">
+              {categories.map((category) => (
+                <div key={category.key} className="mb-4 last:mb-0">
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-2 mb-2">
+                    {category.label}
+                  </h3>
+                  <div className="space-y-1">
+                    {category.models.map((model) => (
+                      <Button
+                        key={model.id}
+                        onClick={() => handleSelectModel(model.id)}
+                        variant={value === model.id ? "default" : "ghost"}
+                        className="w-full justify-start h-auto py-2 px-3 text-left flex flex-col items-start"
+                        data-testid={`button-model-${model.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      >
+                        <span className="font-medium text-sm">{model.name}</span>
+                        {model.description && (
+                          <span className="text-xs text-muted-foreground">
+                            {model.description}
+                          </span>
+                        )}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
