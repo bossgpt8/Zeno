@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bossai-v1';
+const CACHE_NAME = 'bossai-v2';
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
