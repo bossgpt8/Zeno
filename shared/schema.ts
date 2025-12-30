@@ -50,19 +50,12 @@ export type Conversation = typeof conversations.$inferSelect;
 
 // AI Models configuration
 export const AI_MODELS = {
-  vision: [
-    { id: "nvidia/nemotron-nano-12b-v2-vl:free", name: "Nemotron Nano 12B 2 VL", description: "NVIDIA multimodal - video & documents" },
-    { id: "google/gemma-3-27b-it:free", name: "Gemma 3 27B", description: "Vision with 131K context" },
-    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small 3.1", description: "Vision with 128K context" },
-    { id: "qwen/qwen-2.5-vl-7b-instruct:free", name: "Qwen 2.5 VL 7B", description: "Video understanding" },
-    { id: "google/gemma-3-12b-it:free", name: "Gemma 3 12B", description: "Vision with 32K context" },
-    { id: "google/gemma-3-4b-it:free", name: "Gemma 3 4B", description: "Lightweight vision" },
-    // HuggingFace Multimodal Models
-    { id: "hf/llava-hf/llava-1.5-13b-hf", name: "LLaVA 1.5 13B (HF)", description: "Best quality image understanding" },
-    { id: "hf/llava-hf/llava-1.5-7b-hf", name: "LLaVA 1.5 7B (HF)", description: "Fast multimodal model" },
-    { id: "hf/Salesforce/blip2-opt-6.7b", name: "BLIP-2 6.7B (HF)", description: "Excellent image understanding" },
-    { id: "hf/Qwen/Qwen-VL", name: "Qwen-VL (HF)", description: "Detailed visual Q&A" },
-    { id: "hf/Salesforce/instructblip-vicuna-7b", name: "InstructBLIP 7B (HF)", description: "Instruction-following vision model" },
+  general: [
+    { id: "hf/Qwen/Qwen2.5-Omni-7B", name: "Qwen 2.5 Omni 7B", description: "Audio, image, video + text any-to-any" },
+    { id: "hf/Qwen/Qwen3-Omni-30B-A3B-Instruct", name: "Qwen 3 Omni 30B Instruct", description: "Most powerful multimodal any-to-any" },
+    { id: "hf/openbmb/MiniCPM-o-2_6", name: "MiniCPM-o 2.6", description: "Efficient multimodal (audio, image, text)" },
+    { id: "hf/deepseek-ai/Janus-Pro-7B", name: "Janus-Pro 7B", description: "Image understanding and generation" },
+    { id: "hf/FunAudioLLM/Fun-Audio-Chat-8B", name: "Fun Audio Chat 8B", description: "Audio + text chat capability" },
   ],
   text: [
     { id: "meta-llama/llama-3.3-70b-instruct:free", name: "Llama 3.3 70B", description: "Smart and efficient" },

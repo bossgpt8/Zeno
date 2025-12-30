@@ -31,11 +31,11 @@ export function ModelSelector({ value, onChange }: ModelSelectorProps) {
   };
 
   const categories = [
-    { key: "vision", label: "Vision Capable", models: AI_MODELS.vision },
+    { key: "general", label: "Multimodal (Audio, Image, Video, Text)", models: AI_MODELS.general },
     { key: "text", label: "Text Only", models: AI_MODELS.text },
     { key: "image", label: "Image Generation", models: AI_MODELS.image },
     { key: "code", label: "Code Generation", models: AI_MODELS.code },
-  ];
+  ].filter(cat => cat.models && cat.models.length > 0);
 
   return (
     <div className="space-y-2">
