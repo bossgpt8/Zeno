@@ -34,6 +34,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     currentModel,
     searchQuery,
     customSystemPrompt,
+    hasSeenAuthPrompt,
+    hasAcceptedLocalStorage,
+    setHasSeenAuthPrompt,
+    setHasAcceptedLocalStorage,
     setCurrentConversationId,
     setCurrentModel,
     setSearchQuery,
@@ -55,9 +59,18 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customSystemPrompt);
+  const [showWarning, setShowWarning] = useState(false);
   const { toast } = useToast();
 
   const conversations = getFilteredConversations();
+
+  // Auto-open auth dialog for new users
+  useState(() => {
+    if (!user && !hasSeenAuthPrompt && !authOpen) {
+      setAuthOpen(true);
+      setHasSeenAuthPrompt(true);
+    }
+  });
 
   const handleNewChat = () => {
     createNewConversation();
@@ -136,6 +149,16 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     } catch (error) {
       console.error("Sign out error:", error);
     }
+  };
+
+  const handleContinueAsGuest = () => {
+    setShowWarning(true);
+  };
+
+  const handleConfirmGuest = () => {
+    setHasAcceptedLocalStorage(true);
+    setShowWarning(false);
+    setAuthOpen(false);
   };
 
   const handleSaveSystemPrompt = () => {
@@ -399,14 +422,66 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                       {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
                     </button>
                   </div>
+
+                  {!isSignUp && (
+                    <div className="pt-2">
+                      <Button
+                        variant="ghost"
+                        className="w-full text-xs text-muted-foreground hover:text-foreground"
+                        onClick={handleContinueAsGuest}
+                      >
+                        Continue without signing in
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </DialogContent>
             </Dialog>
           ) : (
             <div className="text-xs text-muted-foreground text-center p-2">
-              Chats saved locally
+              {hasAcceptedLocalStorage ? "Chats saved locally" : "Sign in to sync chats"}
             </div>
           )}
+
+          {/* Local Storage Warning Dialog */}
+          <Dialog open={showWarning} onOpenChange={setShowWarning}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-amber-500">
+                  <Zap className="h-5 w-5" />
+                  Local Storage Notice
+                </DialogTitle>
+                <DialogDescription className="pt-2">
+                  Your chats will be saved <strong>only on this device</strong>. 
+                  <br /><br />
+                  <span className="text-destructive font-semibold">Risk:</span> If you clear your browser data, reset your device, or use a different browser, your entire conversation history will be permanently lost.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col gap-3 pt-4">
+                <div className="flex items-start gap-2 bg-muted/50 p-3 rounded-lg border border-border">
+                  <Checkbox 
+                    id="understand" 
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        // Just for visual feedback
+                      }
+                    }}
+                  />
+                  <Label htmlFor="understand" className="text-xs leading-normal cursor-pointer">
+                    I understand that my data is not synced and may be lost if I clear my browser.
+                  </Label>
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <Button variant="outline" onClick={() => setShowWarning(false)}>
+                    Back
+                  </Button>
+                  <Button onClick={handleConfirmGuest}>
+                    I Understand, Confirm
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           
           <div className="flex gap-2">
             <div className="flex-1">

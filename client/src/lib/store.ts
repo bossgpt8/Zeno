@@ -40,6 +40,12 @@ interface ChatState {
   hasSeenProfile: boolean;
   setHasSeenProfile: (seen: boolean) => void;
   
+  hasSeenAuthPrompt: boolean;
+  setHasSeenAuthPrompt: (seen: boolean) => void;
+
+  hasAcceptedLocalStorage: boolean;
+  setHasAcceptedLocalStorage: (accepted: boolean) => void;
+  
   conversations: Conversation[];
   currentConversationId: string | null;
   setConversations: (conversations: Conversation[]) => void;
@@ -117,6 +123,12 @@ export const useChatStore = create<ChatState>()(
 
       hasSeenProfile: false,
       setHasSeenProfile: (seen) => set({ hasSeenProfile: seen }),
+      
+      hasSeenAuthPrompt: false,
+      setHasSeenAuthPrompt: (seen) => set({ hasSeenAuthPrompt: seen }),
+
+      hasAcceptedLocalStorage: false,
+      setHasAcceptedLocalStorage: (accepted) => set({ hasAcceptedLocalStorage: accepted }),
       
       conversations: [],
       currentConversationId: null,
@@ -289,6 +301,8 @@ export const useChatStore = create<ChatState>()(
         hasSeenOnboarding: state.hasSeenOnboarding,
         hasSeenSettings: state.hasSeenSettings,
         hasSeenProfile: state.hasSeenProfile,
+        hasSeenAuthPrompt: state.hasSeenAuthPrompt,
+        hasAcceptedLocalStorage: state.hasAcceptedLocalStorage,
         userName: state.userName,
         userAvatar: state.userAvatar,
         userPersonality: state.userPersonality,

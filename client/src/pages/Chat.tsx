@@ -48,9 +48,11 @@ export default function Chat() {
     hasSeenOnboarding,
     hasSeenSettings,
     hasSeenProfile,
+    hasSeenAuthPrompt,
     setHasSeenOnboarding,
     setHasSeenSettings,
     setHasSeenProfile,
+    setHasSeenAuthPrompt,
     setUserName,
     setUserAvatar,
     setUserPersonality,
@@ -116,6 +118,19 @@ export default function Chat() {
       return () => clearTimeout(timer);
     }
   }, [hasSeenProfile]);
+
+  // Prompt for auth on first visit if not signed in
+  useEffect(() => {
+    if (!user && !hasSeenAuthPrompt && hasSeenOnboarding && hasSeenProfile) {
+      const timer = setTimeout(() => {
+        setSidebarOpen(true);
+        // We'll need a way to trigger the auth modal from here
+        // For now, opening the sidebar will show the "Sign In" button
+        // But we can improve this by adding a state to open the auth modal directly
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [user, hasSeenAuthPrompt, hasSeenOnboarding, hasSeenProfile, setSidebarOpen]);
 
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
