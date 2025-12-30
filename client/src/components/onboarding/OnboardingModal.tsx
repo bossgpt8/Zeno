@@ -71,9 +71,9 @@ export function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md" data-testid="onboarding-modal">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Welcome to BossAI</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-center md:text-left">Let's get started!</DialogTitle>
           <DialogDescription className="sr-only">
-            Get started with BossAI - learn about the features available to you
+            A quick tour of what we can do together
           </DialogDescription>
         </DialogHeader>
         

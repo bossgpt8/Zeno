@@ -31,9 +31,9 @@ export function NameModal({ open, onClose, onSetName, currentName = "User" }: Na
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>What's your name?</DialogTitle>
+          <DialogTitle>What should I call you?</DialogTitle>
           <DialogDescription>
-            BossAI will use this name to personalize your conversations and make them feel more friendly and personal!
+            I'd love to know your name so I can make our conversations feel more personal and friendly!
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">

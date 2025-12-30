@@ -17,7 +17,7 @@ import { useChatStore } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
 import { AI_MODELS } from "@shared/schema";
 import type { Message } from "@shared/schema";
-import { getUserProfile } from "@/lib/firebase";
+import { getUserProfile, getConversations, saveConversation } from "@/lib/firebase";
 
 // Helper function to fetch with timeout
 const fetchWithTimeout = (url: string, options: RequestInit, timeoutMs: number = 60000) => {
@@ -58,6 +58,7 @@ export default function Chat() {
     setUserPersonality,
     setUserGender,
     setIsGenerating,
+    setConversations,
     addMessage,
     updateMessage,
     addImage,
@@ -80,11 +81,12 @@ export default function Chat() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
-  // Load user profile from Firestore on mount
+  // Load user profile and conversations from Firestore on mount
   useEffect(() => {
-    const loadUserProfile = async () => {
+    const loadUserData = async () => {
       if (user?.uid) {
         try {
+          // Load Profile
           const profile = await getUserProfile(user.uid);
           if (profile) {
             if (profile.userName) setUserName(profile.userName);
@@ -92,14 +94,21 @@ export default function Chat() {
             if (profile.userPersonality) setUserPersonality(profile.userPersonality);
             if (profile.userGender) setUserGender(profile.userGender);
           }
+
+          // Load Conversations
+          const cloudConversations = await getConversations(user.uid);
+          if (cloudConversations.length > 0) {
+            // Merge or replace local conversations
+            setConversations(cloudConversations as any);
+          }
         } catch (error) {
-          console.error("Error loading user profile:", error);
+          console.error("Error loading user data:", error);
         }
       }
     };
     
-    loadUserProfile();
-  }, [user?.uid, setUserName, setUserAvatar, setUserPersonality, setUserGender]);
+    loadUserData();
+  }, [user?.uid, setUserName, setUserAvatar, setUserPersonality, setUserGender, setConversations]);
 
   useEffect(() => {
     if (!hasSeenOnboarding) {
@@ -257,6 +266,14 @@ export default function Chat() {
     addMessage(userMessage);
     clearImages();
 
+    // Sync to Firestore if signed in
+    if (user?.uid && conversationId) {
+      const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
+      if (currentConversation) {
+        saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
+      }
+    }
+
     // Update conversation title if first message
     if (messages.length === 0) {
       const title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
@@ -288,6 +305,14 @@ export default function Chat() {
           parentId: userMessage.id,
         };
         addMessage(assistantMessage);
+
+        // Sync assistant response to Firestore
+        if (user?.uid && conversationId) {
+          const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
+          if (currentConversation) {
+            saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
+          }
+        }
 
         if (voiceEnabled) {
           speakText("I've generated an image for you!");
@@ -350,6 +375,14 @@ export default function Chat() {
 
         addMessage(assistantMessage);
 
+        // Sync assistant message skeleton to Firestore
+        if (user?.uid && conversationId) {
+          const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
+          if (currentConversation) {
+            saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
+          }
+        }
+
         if (response.body) {
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
@@ -395,6 +428,14 @@ export default function Chat() {
                     updateMessage(assistantMessage.id, fullContent);
                   }
                 } catch {}
+              }
+            }
+
+            // Sync full streaming content to Firestore
+            if (user?.uid && conversationId) {
+              const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
+              if (currentConversation) {
+                saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
               }
             }
           } catch (error) {

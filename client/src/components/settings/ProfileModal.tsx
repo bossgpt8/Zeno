@@ -19,6 +19,9 @@ import avatar1 from "@assets/stock_images/astronaut_avatar_nas_d6106021.jpg";
 import avatar2 from "@assets/stock_images/astronaut_avatar_nas_bc39255e.jpg";
 import avatar3 from "@assets/stock_images/astronaut_avatar_nas_d931e821.jpg";
 
+import { getUserProfile, saveUserProfile } from "@/lib/firebase";
+import { useChatStore } from "@/lib/store";
+
 const AVATAR_OPTIONS = [
   { id: "avatar-1", label: "Astronaut 1", image: avatar1 },
   { id: "avatar-2", label: "Astronaut 2", image: avatar2 },
@@ -54,10 +57,26 @@ export function ProfileModal({
   const [avatar, setAvatar] = useState(currentAvatar);
   const [personality, setPersonality] = useState(currentPersonality);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
       onSaveProfile(name.trim(), avatar, personality);
+      
+      // Sync profile to Firestore if user is signed in
+      const user = useChatStore.getState().user;
+      if (user?.uid) {
+        try {
+          await saveUserProfile(user.uid, {
+            userName: name.trim(),
+            userAvatar: avatar,
+            userPersonality: personality,
+            userGender: useChatStore.getState().userGender
+          });
+        } catch (error) {
+          console.error("Error syncing profile to Firestore:", error);
+        }
+      }
+      
       onClose();
     }
   };
@@ -66,9 +85,9 @@ export function ProfileModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Complete Your Profile</DialogTitle>
+          <DialogTitle>Make it your own</DialogTitle>
           <DialogDescription>
-            Personalize your BossAI experience with your name, avatar, and preferred communication style
+            Tell me a bit about yourself so I can adjust how I talk and help you better.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5">

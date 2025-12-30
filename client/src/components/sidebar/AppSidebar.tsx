@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { ConversationList } from "./ConversationList";
 import { ModelSelector } from "./ModelSelector";
 import { useChatStore } from "@/lib/store";
-import { isFirebaseConfigured, signInWithGoogle, signOutUser, signInWithEmail, signUpWithEmail } from "@/lib/firebase";
+import { isFirebaseConfigured, signInWithGoogle, signOutUser, signInWithEmail, signUpWithEmail, deleteConversation as deleteCloudConversation } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 
@@ -80,6 +80,17 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const handleSelectConversation = (id: string) => {
     setCurrentConversationId(id);
     onClose();
+  };
+
+  const handleDeleteConversation = async (id: string) => {
+    deleteConversation(id);
+    if (user?.uid) {
+      try {
+        await deleteCloudConversation(user.uid, id);
+      } catch (error) {
+        console.error("Error deleting conversation from cloud:", error);
+      }
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -231,7 +242,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             conversations={conversations}
             currentId={currentConversationId}
             onSelect={handleSelectConversation}
-            onDelete={deleteConversation}
+            onDelete={handleDeleteConversation}
             onTogglePin={togglePinConversation}
           />
         </ScrollArea>

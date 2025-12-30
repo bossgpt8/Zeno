@@ -65,11 +65,11 @@ export function WelcomeScreen({ onSuggestionClick }: WelcomeScreenProps) {
             className="text-3xl md:text-4xl font-bold text-center mb-2"
             data-testid="text-welcome-title"
           >
-            Hello, I'm BossAI
+            I'm here to help!
           </h1>
           
-          <p className="text-center text-muted-foreground text-base md:text-lg">
-            Your personal AI assistant. Ask anything, and I'll help you learn, create, and solve problems.
+          <p className="text-center text-muted-foreground text-base md:text-lg px-4">
+            Think of me as your personal creative partner. I can help you learn new things, write stories, or even solve tricky problems together.
           </p>
         </div>
         
