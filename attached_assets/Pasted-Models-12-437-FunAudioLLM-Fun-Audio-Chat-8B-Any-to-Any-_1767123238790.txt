@@ -1,0 +1,277 @@
+Models
+12,437
+FunAudioLLM/Fun-Audio-Chat-8B
+Any-to-Any
+•
+9B
+•
+Updated 6 days ago
+•
+458
+•
+107
+zai-org/RealVideo
+Any-to-Any
+•
+Updated 19 days ago
+•
+94
+Qwen/Qwen3-Omni-30B-A3B-Instruct
+Any-to-Any
+•
+35B
+•
+Updated Sep 22
+•
+208k
+•
+782
+Qwen/Qwen3-Omni-30B-A3B-Captioner
+Any-to-Any
+•
+32B
+•
+Updated Sep 22
+•
+21.7k
+•
+188
+meta-llama/Llama-4-Scout-17B-16E-Instruct
+Any-to-Any
+•
+109B
+•
+Updated May 23
+•
+251k
+•
+1.17k
+XiaomiMiMo/MiMo-Audio-7B-Instruct
+Any-to-Any
+•
+8B
+•
+Updated Sep 23
+•
+5.57k
+•
+146
+AiAsistent/gemma-3-4b-it-Cognitive-Liberty
+Any-to-Any
+•
+4B
+•
+Updated 7 days ago
+•
+56
+•
+4
+meta-llama/Llama-Guard-4-12B
+Any-to-Any
+•
+12B
+•
+Updated Apr 29
+•
+64.6k
+•
+70
+unsloth/Qwen2.5-Omni-3B-GGUF
+Any-to-Any
+•
+3B
+•
+Updated May 28
+•
+3.36k
+•
+32
+deepseek-ai/Janus-Pro-7B
+Any-to-Any
+•
+Updated Feb 1
+•
+68.8k
+•
+3.54k
+unsloth/gemma-3-12b-it-GGUF
+Any-to-Any
+•
+12B
+•
+Updated Aug 14
+•
+48.2k
+•
+109
+meta-llama/Llama-4-Maverick-17B-128E-Instruct
+Any-to-Any
+•
+402B
+•
+Updated May 23
+•
+148k
+•
+443
+OmniGen2/OmniGen2
+Any-to-Any
+•
+Updated Sep 27
+•
+12.5k
+•
+424
+Qwen/Qwen3-Omni-30B-A3B-Thinking
+Any-to-Any
+•
+32B
+•
+Updated Sep 22
+•
+40.8k
+•
+241
+Lambent/IsoC-Gemma-3-12B
+Any-to-Any
+•
+12B
+•
+Updated 11 days ago
+•
+36
+•
+2
+adept/fuyu-8b
+Any-to-Any
+•
+9B
+•
+Updated Nov 4, 2023
+•
+45.9k
+•
+1.02k
+lithiumice/models_hub
+Any-to-Any
+•
+Updated Dec 4, 2024
+•
+11
+showlab/show-o
+Any-to-Any
+•
+Updated Jun 21
+•
+79
+•
+17
+BAAI/Emu3-Gen
+Any-to-Any
+•
+8B
+•
+Updated Oct 23, 2024
+•
+1.37k
+•
+222
+openbmb/MiniCPM-o-2_6
+Any-to-Any
+•
+9B
+•
+Updated Oct 5
+•
+95.3k
+•
+1.27k
+onnx-community/Janus-Pro-1B-ONNX
+Any-to-Any
+•
+Updated Mar 6
+•
+1.6k
+•
+50
+Nikhil-aka-Nick/FlorenceDropout2
+Any-to-Any
+•
+0.8B
+•
+Updated Feb 14
+•
+6
+•
+1
+deepseek-community/Janus-Pro-1B
+Any-to-Any
+•
+2B
+•
+Updated Jun 3
+•
+4.28k
+•
+5
+unsloth/gemma-3-4b-it-GGUF
+Any-to-Any
+•
+4B
+•
+Updated Aug 14
+•
+51.2k
+•
+159
+unsloth/gemma-3-27b-it-GGUF
+Any-to-Any
+•
+27B
+•
+Updated Aug 14
+•
+76.7k
+•
+178
+Kfjjdjdjdhdhd/Gemma-3-4b-it-Uncensored-DBL-X-int2-quantized
+Any-to-Any
+•
+5B
+•
+Updated Mar 20
+•
+19
+•
+2
+Qwen/Qwen2.5-Omni-7B
+Any-to-Any
+•
+11B
+•
+Updated Apr 30
+•
+160k
+•
+1.83k
+unsloth/gemma-3-4b-it-qat-GGUF
+Any-to-Any
+•
+4B
+•
+Updated Jun 15
+•
+6.22k
+•
+27
+Gen-Verse/MMaDA-8B-Base
+Any-to-Any
+•
+8B
+•
+Updated May 24
+•
+785
+•
+88
+Gunulhona/Gemma-3-4B

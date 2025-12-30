@@ -57,6 +57,12 @@ export const AI_MODELS = {
     { id: "qwen/qwen-2.5-vl-7b-instruct:free", name: "Qwen 2.5 VL 7B", description: "Video understanding" },
     { id: "google/gemma-3-12b-it:free", name: "Gemma 3 12B", description: "Vision with 32K context" },
     { id: "google/gemma-3-4b-it:free", name: "Gemma 3 4B", description: "Lightweight vision" },
+    // HuggingFace Multimodal Models
+    { id: "hf/llava-hf/llava-1.5-13b-hf", name: "LLaVA 1.5 13B (HF)", description: "Best quality image understanding" },
+    { id: "hf/llava-hf/llava-1.5-7b-hf", name: "LLaVA 1.5 7B (HF)", description: "Fast multimodal model" },
+    { id: "hf/Salesforce/blip2-opt-6.7b", name: "BLIP-2 6.7B (HF)", description: "Excellent image understanding" },
+    { id: "hf/Qwen/Qwen-VL", name: "Qwen-VL (HF)", description: "Detailed visual Q&A" },
+    { id: "hf/Salesforce/instructblip-vicuna-7b", name: "InstructBLIP 7B (HF)", description: "Instruction-following vision model" },
   ],
   text: [
     { id: "meta-llama/llama-3.3-70b-instruct:free", name: "Llama 3.3 70B", description: "Smart and efficient" },
