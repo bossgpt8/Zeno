@@ -21,6 +21,7 @@ import { useChatStore } from "@/lib/store";
 import { isFirebaseConfigured, signInWithGoogle, signOutUser, signInWithEmail, signUpWithEmail, deleteConversation as deleteCloudConversation } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import bossaiRobot from "@assets/bossai-robot.png";
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -195,10 +196,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       >
         <div className="p-4 md:p-5 border-b border-sidebar-border">
           <div className="flex items-center gap-3 mb-4 md:mb-5">
-            <div className="w-9 h-9 md:w-10 md:h-10 bg-primary rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center overflow-hidden">
+              <img src={bossaiRobot} alt="Boss" className="w-full h-full object-cover" />
             </div>
-            <span className="text-base md:text-lg font-bold text-sidebar-foreground">BossAI</span>
+            <span className="text-base md:text-lg font-bold text-sidebar-foreground">Boss</span>
           </div>
           
           <Button
