@@ -383,7 +383,10 @@ export default function Chat() {
           }
         }
 
-        if (response.body) {
+        // Parse response - handle both streaming and JSON responses
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/event-stream') && response.body) {
+          // Handle streaming response
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
 
@@ -430,17 +433,24 @@ export default function Chat() {
                 } catch {}
               }
             }
-
-            // Sync full streaming content to Firestore
-            if (user?.uid && conversationId) {
-              const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
-              if (currentConversation) {
-                saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
-              }
-            }
           } catch (error) {
             console.error("Stream reading error:", error);
             if (!fullContent) throw error;
+          }
+        } else {
+          // Handle JSON response
+          const data = await response.json();
+          fullContent = data.content || "";
+          if (fullContent) {
+            updateMessage(assistantMessage.id, fullContent);
+          }
+        }
+
+        // Sync full content to Firestore
+        if (user?.uid && conversationId) {
+          const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
+          if (currentConversation) {
+            saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
           }
         }
 
