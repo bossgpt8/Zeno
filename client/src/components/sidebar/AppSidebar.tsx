@@ -1,4 +1,4 @@
-import { Zap, Plus, User, LogOut, Search, Settings, X, Mail, Lock } from "lucide-react";
+import { Zap, Plus, User, LogOut, Search, Settings, X, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,6 +50,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customSystemPrompt);
@@ -275,13 +277,26 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="password"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
-                          className="pl-9"
+                          className="pl-9 pr-10"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           required
                         />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </Button>
                       </div>
                     </div>
                     {isSignUp && (
@@ -291,13 +306,26 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                           <Input
                             id="confirmPassword"
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"}
                             placeholder="••••••••"
-                            className="pl-9"
+                            className="pl-9 pr-10"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
                           />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          >
+                            {showConfirmPassword ? (
+                              <EyeOff className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </Button>
                         </div>
                       </div>
                     )}
