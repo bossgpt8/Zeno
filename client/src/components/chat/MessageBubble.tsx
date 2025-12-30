@@ -91,6 +91,41 @@ export function MessageBubble({
     }
   }, [isEditing, editContent.length]);
 
+  useEffect(() => {
+    if (!contentRef.current || isEditing) return;
+
+    const preElements = contentRef.current.querySelectorAll("pre");
+    
+    preElements.forEach((pre) => {
+      // Only add if copy button doesn't already exist
+      if (pre.querySelector(".copy-btn")) return;
+
+      const button = document.createElement("button");
+      button.className = "copy-btn";
+      button.textContent = "Copy";
+      button.type = "button";
+      button.setAttribute("data-testid", "button-copy-code");
+
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const code = pre.textContent || "";
+        try {
+          await navigator.clipboard.writeText(code);
+          const originalText = button.textContent;
+          button.textContent = "Copied!";
+          setTimeout(() => {
+            button.textContent = originalText;
+          }, 2000);
+        } catch (error) {
+          console.error("Failed to copy code:", error);
+        }
+      });
+
+      pre.style.position = "relative";
+      pre.appendChild(button);
+    });
+  }, [renderedContent, isEditing]);
+
   const handleEdit = () => {
     setIsEditing(true);
   };
