@@ -9,9 +9,12 @@ import { marked } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
 import bossaiRobot from "@assets/bossai-robot.png";
-import avatar1 from "@assets/stock_images/astronaut_avatar_nas_d6106021.jpg";
-import avatar2 from "@assets/stock_images/astronaut_avatar_nas_bc39255e.jpg";
-import avatar3 from "@assets/stock_images/astronaut_avatar_nas_d931e821.jpg";
+import avatar1 from "@assets/image_1767059069765.png";
+import avatar2 from "@assets/image_1767059090978.png";
+import avatar3 from "@assets/image_1767059124279.png";
+import avatar4 from "@assets/image_1767059177424.png";
+import avatar5 from "@assets/image_1767059193731.png";
+import avatar6 from "@assets/image_1767059240340.png";
 
 interface MessageBubbleProps {
   message: Message;
@@ -30,6 +33,9 @@ const AVATAR_IMAGES: { [key: string]: string } = {
   "avatar-1": avatar1,
   "avatar-2": avatar2,
   "avatar-3": avatar3,
+  "avatar-4": avatar4,
+  "avatar-5": avatar5,
+  "avatar-6": avatar6,
 };
 
 export function MessageBubble({
