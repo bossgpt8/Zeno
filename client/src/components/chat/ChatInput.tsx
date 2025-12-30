@@ -172,10 +172,13 @@ export function ChatInput({
           
           <Button
             size="icon"
-            variant={isRecording ? "destructive" : "ghost"}
             onClick={onToggleRecording}
             disabled={disabled || isGenerating}
-            className={`flex-shrink-0 ${isRecording ? "animate-pulse" : ""}`}
+            className={`flex-shrink-0 h-10 w-10 rounded-full ${
+              isRecording 
+                ? "bg-blue-500 hover:bg-blue-600 text-white animate-pulse" 
+                : "bg-blue-500 hover:bg-blue-600 text-white"
+            }`}
             data-testid="button-voice-input"
           >
             {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
