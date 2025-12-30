@@ -462,10 +462,19 @@ export default function Chat() {
       let errorTitle = "Something went wrong";
       let errorDescription = "I ran into a bit of trouble getting that response for you. Let's try again?";
       
-      // Handle timeout errors
+      // Log full error for debugging
+      console.error("Full error details:", error);
+      
+      // Handle specific error messages
       if (error.message.includes("timeout") || error.message.includes("no internet")) {
         errorTitle = "Connection lost";
         errorDescription = "It looks like your internet connection dropped or the server is a bit slow. Please check your connection and try again!";
+      } else if (error.message.includes("API key") || error.message.includes("not configured")) {
+        errorTitle = "Configuration Error";
+        errorDescription = "The API key is not configured. Please check your environment variables.";
+      } else if (error.message) {
+        // Show the actual error message for debugging
+        errorDescription = error.message;
       }
       
       toast({
