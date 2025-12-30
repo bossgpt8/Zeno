@@ -5,7 +5,38 @@ const chatRequestSchema = z.object({
   messages: z.array(z.any()),
   model: z.string(),
   customPrompt: z.string().optional(),
+  enableWebSearch: z.boolean().optional(),
 });
+
+async function searchWeb(query: string, apiKey: string) {
+  try {
+    const response = await fetch('https://api.tavily.com/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        query: query,
+        max_results: 5,
+        include_answer: true,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Tavily API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return {
+      results: data.results || [],
+      answer: data.answer,
+    };
+  } catch (error) {
+    console.error('Web search error:', error);
+    return null;
+  }
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -18,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Invalid request body' });
     }
 
-    const { messages, model, customPrompt } = parseResult.data;
+    const { messages, model, customPrompt, enableWebSearch } = parseResult.data;
     const isHuggingFace = model?.startsWith('hf/');
     
     let systemContent = `You are BossAI, an intelligent AI assistant.
@@ -37,8 +68,52 @@ RESPONSE STYLE:
 - Never start responses with "As BossAI..." or "I am BossAI and..."
 - Just provide the helpful answer the user is looking for`;
 
+    if (enableWebSearch && process.env.TAVILY_API_KEY) {
+      systemContent += `\n\nWEB SEARCH CAPABILITY:
+You have access to real-time web search. Use it when:
+- Users ask about current events, news, or recent information
+- You need to verify recent data or statistics
+- Users ask about specific products, prices, or availability
+- You need current information to provide accurate answers
+When using web search results, mention your sources.`;
+    }
+
     if (customPrompt) {
       systemContent += `\n\nAdditional User Instructions:\n${customPrompt}`;
+    }
+
+    let messagesForAPI = [...messages];
+
+    // Perform web search if enabled
+    if (enableWebSearch && process.env.TAVILY_API_KEY) {
+      const lastUserMessage = messages[messages.length - 1];
+      if (lastUserMessage && lastUserMessage.role === 'user') {
+        const userQuery = typeof lastUserMessage.content === 'string' 
+          ? lastUserMessage.content 
+          : lastUserMessage.content?.[0]?.text || '';
+        
+        if (userQuery) {
+          const searchResults = await searchWeb(userQuery, process.env.TAVILY_API_KEY);
+          if (searchResults && (searchResults.results.length > 0 || searchResults.answer)) {
+            let searchContext = '\n\nWEB SEARCH RESULTS:\n';
+            if (searchResults.answer) {
+              searchContext += `Summary: ${searchResults.answer}\n\n`;
+            }
+            searchContext += 'Sources:\n';
+            searchResults.results.slice(0, 5).forEach((result: any, i: number) => {
+              searchContext += `${i + 1}. ${result.title} - ${result.url}\n   ${result.content}\n`;
+            });
+
+            // Append search results to last user message
+            if (typeof lastUserMessage.content === 'string') {
+              messagesForAPI[messagesForAPI.length - 1] = {
+                ...lastUserMessage,
+                content: lastUserMessage.content + searchContext,
+              };
+            }
+          }
+        }
+      }
     }
 
     const systemMessage = {
@@ -46,7 +121,7 @@ RESPONSE STYLE:
       content: systemContent,
     };
 
-    const messagesWithSystem = [systemMessage, ...messages];
+    const messagesWithSystem = [systemMessage, ...messagesForAPI];
 
     let response;
 
