@@ -89,8 +89,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       setAuthOpen(false);
     } catch (error: any) {
       toast({
-        title: "Auth Error",
-        description: error.message,
+        title: "Whoops!",
+        description: "We couldn't sign you in with Google. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -105,16 +105,16 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     if (isSignUp) {
       if (password !== confirmPassword) {
         toast({
-          title: "Validation Error",
-          description: "Passwords do not match.",
+          title: "Check your password",
+          description: "The passwords you entered don't match. Give it another look!",
           variant: "destructive",
         });
         return;
       }
       if (!agreedToTerms) {
         toast({
-          title: "Validation Error",
-          description: "You must agree to the Terms of Service and Privacy Policy.",
+          title: "Almost there!",
+          description: "Please check the box to agree to our Terms and Privacy Policy to continue.",
           variant: "destructive",
         });
         return;
@@ -134,8 +134,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       setConfirmPassword("");
     } catch (error: any) {
       toast({
-        title: "Auth Error",
-        description: error.message,
+        title: "Sign in failed",
+        description: "We couldn't sign you in with those details. Please double-check and try again.",
         variant: "destructive",
       });
     } finally {

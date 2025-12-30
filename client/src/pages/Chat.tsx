@@ -193,8 +193,8 @@ export default function Chat() {
         setIsRecording(false);
         if (event.error !== "no-speech" && event.error !== "audio-capture" && event.error !== "aborted") {
           toast({
-            title: "Voice Error",
-            description: "Could not recognize speech. Please try again.",
+            title: "I didn't quite catch that",
+            description: "I couldn't hear you clearly. Could you try speaking again?",
             variant: "destructive",
           });
         }
@@ -408,13 +408,13 @@ export default function Chat() {
         }
       }
     } catch (error: any) {
-      let errorTitle = "Error";
-      let errorDescription = error.message || "Failed to get response. Please try again.";
+      let errorTitle = "Something went wrong";
+      let errorDescription = "I ran into a bit of trouble getting that response for you. Let's try again?";
       
       // Handle timeout errors
       if (error.message.includes("timeout") || error.message.includes("no internet")) {
-        errorTitle = "Connection Timeout";
-        errorDescription = "No internet connection or the server is not responding. Please check your connection and try again.";
+        errorTitle = "Connection lost";
+        errorDescription = "It looks like your internet connection dropped or the server is a bit slow. Please check your connection and try again!";
       }
       
       toast({
