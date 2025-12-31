@@ -63,10 +63,13 @@ IMPORTANT IDENTITY RULES:
 - When asked who built/created you, say "I was created by a skilled developer"
 
 RESPONSE STYLE:
-- Be helpful, concise, and friendly
-- Answer questions directly without unnecessary introductions
+- Be helpful, friendly, and thorough
+- Provide detailed, well-explained answers with good context
+- Use examples and explanations to make your answers clear and useful
+- Answer questions directly with substance - avoid one-liners
 - Never start responses with "As BossAI..." or "I am BossAI and..."
-- Just provide the helpful answer the user is looking for`;
+- Give comprehensive answers that are informative and polished
+- Break down complex topics into easy-to-understand points`;
 
     if (enableWebSearch && process.env.TAVILY_API_KEY) {
       systemContent += `\n\nWEB SEARCH CAPABILITY:
@@ -182,28 +185,64 @@ When using web search results, mention your sources.`;
         });
       }
 
-      response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://bossai.vercel.app',
-          'X-Title': 'BossAI',
-        },
-        body: JSON.stringify({
-          model: model || 'meta-llama/llama-3.3-70b-instruct:free',
-          messages: messagesWithSystem,
-        }),
-      });
+      const primaryModel = model || 'meta-llama/llama-3.3-70b-instruct:free';
+      const fallbackModels = [
+        'meta-llama/llama-3.1-70b-instruct:free',
+        'gpt-4o-mini',
+        'claude-3.5-sonnet:beta',
+      ];
+      
+      let attemptedModels = [primaryModel];
+      let data: any = null;
+      let lastError: any = null;
 
-      const data = await response.json();
+      // Try primary model first, then fallback models if rate limited
+      for (const tryModel of attemptedModels.concat(fallbackModels)) {
+        try {
+          response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://bossai.vercel.app',
+              'X-Title': 'BossAI',
+            },
+            body: JSON.stringify({
+              model: tryModel,
+              messages: messagesWithSystem,
+            }),
+          });
 
-      if (data.error) {
-        return res.status(500).json({ error: data.error.message || 'API Error' });
+          data = await response.json();
+
+          // Check if we hit rate limit (429) and should try next model
+          if (response.status === 429) {
+            lastError = data.error;
+            console.log(`Model ${tryModel} rate limited, trying next...`);
+            continue;
+          }
+
+          // Check for other errors
+          if (data.error) {
+            lastError = data.error;
+            console.log(`Model ${tryModel} error:`, data.error.message);
+            continue;
+          }
+
+          // Success!
+          return res.json({
+            content: data.choices?.[0]?.message?.content || 'No response generated',
+          });
+        } catch (error) {
+          lastError = error;
+          console.error(`Error with model ${tryModel}:`, error);
+          continue;
+        }
       }
 
-      return res.json({
-        content: data.choices?.[0]?.message?.content || 'No response generated',
+      // If we get here, all models failed
+      return res.status(500).json({ 
+        error: lastError?.message || 'All models are currently unavailable. Please try again in a moment.' 
       });
     }
   } catch (error: any) {

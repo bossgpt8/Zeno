@@ -380,7 +380,7 @@ export default function Chat() {
             customPrompt: customSystemPrompt,
             userName,
             userGender,
-            enableWebSearch: true,
+            enableWebSearch: false,
           }),
         }, 60000);
 
@@ -480,9 +480,10 @@ export default function Chat() {
           }
         }
 
-        if (voiceEnabled && fullContent) {
-          speakText(fullContent);
-        }
+        // Don't automatically speak - user must manually enable TTS
+        // if (voiceEnabled && fullContent) {
+        //   speakText(fullContent);
+        // }
       }
     } catch (error: any) {
       let errorTitle = "Something went wrong";
