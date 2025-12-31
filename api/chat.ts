@@ -126,39 +126,52 @@ When using web search results, mention your sources.`;
     let response;
 
     if (isHuggingFace) {
-      // Use HuggingFace API via OpenRouter (acts as proxy)
-      // HuggingFace models are accessed through OpenRouter with hf/ prefix
-      const apiKey = process.env.OPENROUTER_API_KEY;
-
-      if (!apiKey) {
+      // Use HuggingFace Inference API
+      const hfApiKey = process.env.HUGGINGFACE_API_KEY;
+      if (!hfApiKey) {
         return res.status(500).json({
-          error: 'OpenRouter API key not configured. HuggingFace models require OpenRouter. Please add OPENROUTER_API_KEY in environment variables.',
+          error: 'HuggingFace API key not configured. Please add HUGGINGFACE_API_KEY in environment variables.',
         });
       }
 
-      response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const modelName = model.replace('hf/', '');
+      
+      // Use HuggingFace Serverless Inference API
+      response = await fetch(`https://api-inference.huggingface.co/models/${modelName}`, {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${hfApiKey}`,
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://bossai.vercel.app',
-          'X-Title': 'BossAI',
         },
         body: JSON.stringify({
-          model: model, // Send with hf/ prefix as-is for OpenRouter
-          messages: messagesWithSystem,
+          inputs: messagesWithSystem.map((m: any) => ({
+            role: m.role,
+            content: m.content,
+          })),
+          parameters: {
+            max_new_tokens: 1000,
+          }
         }),
       });
 
       const data = await response.json();
-
+      
       if (data.error) {
-        return res.status(500).json({ error: data.error.message || 'HuggingFace/OpenRouter API Error' });
+        return res.status(500).json({ error: Array.isArray(data.error) ? data.error[0] : (data.error || 'HuggingFace API Error') });
       }
 
-      return res.json({
-        content: data.choices?.[0]?.message?.content || 'No response generated',
-      });
+      let content = '';
+      if (Array.isArray(data)) {
+        content = data[0]?.generated_text || 'No response generated';
+      } else if (data.generated_text) {
+        content = data.generated_text;
+      } else {
+        // Log the full response to understand format
+        console.log('HF Response format:', JSON.stringify(data));
+        content = 'No response generated';
+      }
+
+      return res.json({ content });
     } else {
       // Use OpenRouter API (default)
       const apiKey = process.env.OPENROUTER_API_KEY;
