@@ -198,7 +198,7 @@ When using web search results, mention your sources.`;
       let data: any = null;
       let lastError: any = null;
 
-      // Try primary model first, then fallback models if rate limited
+      // Try primary model first, then fallback models if there are any errors
       for (const tryModel of attemptedModels.concat(fallbackModels)) {
         try {
           response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -217,34 +217,43 @@ When using web search results, mention your sources.`;
 
           data = await response.json();
 
-          // Check if we hit rate limit (429) and should try next model
-          if (response.status === 429) {
-            lastError = data.error;
-            console.log(`Model ${tryModel} rate limited, trying next...`);
+          // If response status is not ok (any error: 400, 404, 429, 500, etc.) try next model
+          if (!response.ok) {
+            lastError = data.error?.message || `Model ${tryModel} returned status ${response.status}`;
+            console.log(`Model ${tryModel} failed (${response.status}): ${lastError}. Trying next...`);
             continue;
           }
 
-          // Check for other errors
+          // Check if API returned an error in the response body
           if (data.error) {
-            lastError = data.error;
-            console.log(`Model ${tryModel} error:`, data.error.message);
+            lastError = data.error.message || JSON.stringify(data.error);
+            console.log(`Model ${tryModel} API error: ${lastError}. Trying next...`);
+            continue;
+          }
+
+          // Check if we got a valid response
+          if (!data.choices?.[0]?.message?.content) {
+            lastError = `Model ${tryModel} returned empty response`;
+            console.log(`${lastError}. Trying next...`);
             continue;
           }
 
           // Success!
+          console.log(`Model ${tryModel} responded successfully`);
           return res.json({
-            content: data.choices?.[0]?.message?.content || 'No response generated',
+            content: data.choices[0].message.content,
           });
-        } catch (error) {
-          lastError = error;
-          console.error(`Error with model ${tryModel}:`, error);
+        } catch (error: any) {
+          lastError = error?.message || String(error);
+          console.error(`Exception with model ${tryModel}: ${lastError}. Trying next...`);
           continue;
         }
       }
 
-      // If we get here, all models failed
+      // If we get here, all models failed - return generic message
+      console.error('All models exhausted. Last error:', lastError);
       return res.status(500).json({ 
-        error: lastError?.message || 'All models are currently unavailable. Please try again in a moment.' 
+        error: 'We are experiencing temporary issues. Please try again in a moment.' 
       });
     }
   } catch (error: any) {
