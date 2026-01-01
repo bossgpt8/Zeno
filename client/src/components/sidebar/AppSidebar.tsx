@@ -21,7 +21,21 @@ import { useChatStore } from "@/lib/store";
 import { isFirebaseConfigured, signInWithGoogle, signOutUser, signInWithEmail, signUpWithEmail, deleteConversation as deleteCloudConversation } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import bossaiRobot from "@assets/bossai-robot.png";
+import avatar1 from "@assets/image_1767059069765.png";
+import avatar2 from "@assets/image_1767059090978.png";
+import avatar3 from "@assets/image_1767059124279.png";
+import avatar4 from "@assets/image_1767059177424.png";
+import avatar5 from "@assets/image_1767059193731.png";
+import avatar6 from "@assets/image_1767059240340.png";
+
+const AVATAR_IMAGES: { [key: string]: string } = {
+  "avatar-1": avatar1,
+  "avatar-2": avatar2,
+  "avatar-3": avatar3,
+  "avatar-4": avatar4,
+  "avatar-5": avatar5,
+  "avatar-6": avatar6,
+};
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -31,6 +45,8 @@ interface AppSidebarProps {
 export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const {
     user,
+    userName,
+    userAvatar,
     currentConversationId,
     currentModel,
     searchQuery,
@@ -253,13 +269,13 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3 p-3 bg-card rounded-xl border border-card-border">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
+                  <AvatarImage src={AVATAR_IMAGES[userAvatar] || user?.photoURL || undefined} alt={userName} />
                   <AvatarFallback>
                     <User className="w-4 h-4" />
                   </AvatarFallback>
                 </Avatar>
                 <span className="flex-1 text-sm font-medium truncate text-foreground">
-                  {user.displayName || user.email || "User"}
+                  {userName || user?.displayName || user?.email || "User"}
                 </span>
                 <Button
                   size="icon"
