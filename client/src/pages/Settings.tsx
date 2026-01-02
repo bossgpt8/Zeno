@@ -2,8 +2,16 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Trash2, Edit2, Save, Plus, User, Sliders, Brain, Info, Monitor, Layout, Globe, Volume2, ChevronRight, ChevronDown, MessageSquare, Download, Upload, Archive, Github, Twitter, Linkedin, MessageCircle, X } from "lucide-react";
+import { ArrowLeft, Trash2, Edit2, Save, Plus, User, Sliders, Brain, Info, Monitor, Layout, Globe, Volume2, ChevronRight, ChevronDown, MessageSquare, Download, Upload, Archive, Github, Twitter, Linkedin, MessageCircle, X, HelpCircle } from "lucide-react";
 import { SiDiscord, SiX, SiGithub, SiLinkedin } from "react-icons/si";
+import { Textarea } from "@/components/ui/textarea";
+
+const RESPONDER_STYLES = [
+  { id: "default", label: "Default", description: "Balances professionalism and friendliness." },
+  { id: "concise", label: "Concise", description: "Short, direct, to the point." },
+  { id: "socratic", label: "Socratic", description: "Guides with probing questions." },
+  { id: "formal", label: "Formal", description: "Uses academic/professional tone." },
+];
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -484,9 +492,95 @@ export default function Settings() {
               <div className="space-y-6 pt-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Customize Zeno</h3>
-                  <Button variant="outline" size="sm" className="h-8 gap-2 text-xs font-semibold px-4 rounded-lg bg-muted/30">
-                    <Sliders className="w-3 h-3" /> Settings
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="h-8 gap-2 text-xs font-semibold px-4 rounded-lg bg-muted/30">
+                        <Sliders className="w-3 h-3" /> Settings
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl bg-[#1a1a1a] border-border/40 p-0 overflow-hidden rounded-2xl">
+                      <div className="p-8 space-y-8">
+                        <DialogHeader className="flex flex-row items-center justify-between space-y-0">
+                          <DialogTitle className="text-xl font-bold">Customize Zeno</DialogTitle>
+                        </DialogHeader>
+
+                        <div className="space-y-8 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
+                          {/* Nickname */}
+                          <div className="space-y-3">
+                            <label className="text-sm font-semibold">What would you like Zeno to call you?</label>
+                            <div className="relative">
+                              <Input 
+                                placeholder="Nickname" 
+                                className="bg-[#242424] border-border/20 h-12 rounded-xl text-sm px-4 focus-visible:ring-primary/30"
+                                maxLength={128}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                              />
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-medium">
+                                {name.length}/128
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Context */}
+                          <div className="space-y-3">
+                            <label className="text-sm font-semibold">What would you like Zeno to know about you to better tailor its responses to your needs?</label>
+                            <div className="relative">
+                              <Textarea 
+                                placeholder="For example: Preparing for high school students; Python developers or Little Red Book creators"
+                                className="bg-[#242424] border-border/20 min-h-[80px] rounded-xl text-sm p-4 focus-visible:ring-primary/30 resize-none"
+                                maxLength={500}
+                              />
+                              <div className="absolute right-3 bottom-3 text-[10px] text-muted-foreground font-medium">
+                                0/500
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Response Style */}
+                          <div className="space-y-3">
+                            <label className="text-sm font-semibold">How would you like Zeno to respond?</label>
+                            <div className="grid grid-cols-2 gap-3">
+                              {RESPONDER_STYLES.map((style) => (
+                                <button
+                                  key={style.id}
+                                  className="flex flex-col items-start p-4 rounded-xl border border-border/20 bg-[#242424] hover:bg-[#2a2a2a] transition-colors text-left group"
+                                >
+                                  <div className="font-bold text-sm mb-1">{style.label}</div>
+                                  <div className="text-[11px] text-muted-foreground leading-tight">{style.description}</div>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Custom Instructions */}
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-1.5">
+                              <label className="text-sm font-semibold">Custom instruction: How should Zeno behave?</label>
+                              <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
+                            </div>
+                            <Textarea 
+                              placeholder="Please specify the rules, roles you expect Zeno to follow, or the specific response format you would like to be used."
+                              className="bg-[#242424] border-border/20 min-h-[100px] rounded-xl text-sm p-4 focus-visible:ring-primary/30 resize-none"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-6 border-t border-border/10">
+                          <div className="flex items-center gap-3">
+                            <Switch defaultChecked className="data-[state=checked]:bg-primary" />
+                            <span className="text-sm font-medium">Enable in new chat</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <DialogTrigger asChild>
+                              <Button variant="ghost" className="rounded-xl px-6 h-11 text-sm font-medium hover:bg-muted/10">Cancel</Button>
+                            </DialogTrigger>
+                            <Button className="rounded-xl px-8 h-11 text-sm font-bold bg-primary hover:bg-primary/90">Save</Button>
+                          </div>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
 
