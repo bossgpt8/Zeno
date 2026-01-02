@@ -164,16 +164,6 @@ export default function Settings() {
                   </div>
                   <div className="flex bg-muted/50 p-1 rounded-full border border-border/50">
                     <Button 
-                      variant={theme === "system" ? "secondary" : "ghost"} 
-                      size="sm" 
-                      onClick={() => setTheme("system")}
-                      className={`rounded-full px-4 h-7 text-xs transition-all ${
-                        theme === "system" ? "bg-background shadow-sm border border-border/50 font-medium" : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      System
-                    </Button>
-                    <Button 
                       variant={theme === "light" ? "secondary" : "ghost"} 
                       size="sm" 
                       onClick={() => setTheme("light")}
