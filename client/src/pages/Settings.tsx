@@ -391,7 +391,7 @@ export default function Settings() {
           )}
 
           {activeTab === "personalization" && (
-            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300 pb-20">
               <h2 className="text-2xl font-bold">Personalization</h2>
 
               {/* Profile Details */}
@@ -405,6 +405,7 @@ export default function Settings() {
                       value={name} 
                       onChange={(e) => setName(e.target.value)}
                       className="bg-muted/20 border-border/50 focus:border-primary/50"
+                      data-testid="input-display-name"
                     />
                   </div>
 
@@ -415,6 +416,7 @@ export default function Settings() {
                         <button
                           key={opt.id}
                           onClick={() => setAvatar(opt.id)}
+                          data-testid={`button-avatar-${opt.id}`}
                           className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${
                             avatar === opt.id ? "border-primary scale-110 shadow-lg" : "border-transparent opacity-50 hover:opacity-100"
                           }`}
@@ -427,17 +429,48 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-8 border-t border-border">
-                <Button variant="ghost" onClick={() => setLocation("/")}>Cancel</Button>
-                <Button onClick={handleSave} disabled={isSaving}>
+              {/* Memory Section */}
+              <div className="space-y-8 pt-8 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Memory</h3>
+                  <Button variant="outline" size="sm" className="h-8 gap-2" onClick={() => setNewMemory("")}>
+                    <Plus className="w-3.5 h-3.5" /> New Memory
+                  </Button>
+                </div>
+                
+                <div className="space-y-4">
+                  {memories.map((memory) => (
+                    <div key={memory.id} className="p-4 rounded-xl bg-muted/30 border border-border/50 group">
+                      <div className="flex items-start justify-between gap-4">
+                        <p className="text-sm flex-1 leading-relaxed">{memory.content}</p>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteMemory(memory.id)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {memories.length === 0 && (
+                    <div className="text-center py-12 bg-muted/10 rounded-2xl border border-dashed border-border/50">
+                      <Brain className="w-8 h-8 mx-auto mb-3 opacity-20" />
+                      <p className="text-sm text-muted-foreground">No memories saved yet. Zeno learns from your conversations.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-8 border-t border-border/50">
+                <Button variant="ghost" onClick={() => setLocation("/")} className="text-sm">Cancel</Button>
+                <Button onClick={handleSave} disabled={isSaving} className="text-sm">
                   {isSaving ? "Saving..." : "Save Changes"}
                 </Button>
               </div>
             </div>
           )}
 
-          {activeTab !== "personalization" && (
-            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-4">
+          {(activeTab === "account" || activeTab === "about") && (
+            <div className="flex flex-col items-center justify-center py-32 text-muted-foreground space-y-4 animate-in fade-in zoom-in-95 duration-500">
               <div className="p-4 bg-muted/30 rounded-full">
                 <Layout className="w-8 h-8 opacity-20" />
               </div>
