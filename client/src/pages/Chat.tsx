@@ -423,7 +423,7 @@ export default function Chat() {
             thinkingEnabled: thinkingEnabled,
             memories: useChatStore.getState().memories.map(m => m.content),
           }),
-        }, 60000);
+        }, 180000);
 
         if (!response.ok) {
           const errorData = await response.json();
