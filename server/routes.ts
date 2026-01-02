@@ -117,7 +117,9 @@ When using web search results, mention your sources.`;
         content: systemContent
       };
 
-      const messagesWithSystem = [systemMessage, ...messages];
+      // Filter out any messages with invalid content to prevent API errors
+      const validMessages = messages.filter(m => m && (typeof m.content === 'string' || Array.isArray(m.content)));
+      const messagesWithSystem = [systemMessage, ...validMessages];
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",

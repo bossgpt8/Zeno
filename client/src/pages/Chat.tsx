@@ -285,10 +285,12 @@ export default function Chat() {
 
     // Sync to Firestore if signed in
     if (user?.uid && conversationId) {
-      const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
-      if (currentConversation) {
-        saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
-      }
+      setTimeout(() => {
+        const currentConversation = useChatStore.getState().conversations.find(c => c.id === conversationId);
+        if (currentConversation) {
+          saveConversation(user.uid, conversationId, currentConversation).catch(console.error);
+        }
+      }, 0);
     }
 
     // Generate AI title if first message

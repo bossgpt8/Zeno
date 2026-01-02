@@ -190,9 +190,9 @@ export const useChatStore = create<ChatState>()(
       }),
       getActiveBranch: () => {
         const { messages, currentBranchPath } = get();
-        const result: Message[] = [];
-        let currentParentId: string | null = null;
+        if (!messages || messages.length === 0) return [];
         
+        const result: Message[] = [];
         const messagesByParent = new Map<string | null, Message[]>();
         for (const msg of messages) {
           const parentId = msg.parentId ?? null;
