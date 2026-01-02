@@ -85,6 +85,12 @@ export default function Settings() {
     }
   };
   
+  const [name, setName] = useState(userName);
+  const [avatar, setAvatar] = useState(userAvatar);
+  const [personality, setPersonality] = useState(userPersonality);
+  const [gender, setGender] = useState(userGender);
+  const [isSaving, setIsSaving] = useState(false);
+  
   const [newMemory, setNewMemory] = useState("");
   const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null);
   const [editingMemoryContent, setEditingMemoryContent] = useState("");
