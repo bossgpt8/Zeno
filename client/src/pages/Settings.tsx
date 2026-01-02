@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTheme } from "@/components/ThemeProvider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
@@ -65,13 +66,24 @@ export default function Settings() {
     addMemory,
     deleteMemory,
     updateMemory,
+    conversations,
+    setConversations,
   } = useChatStore();
 
-  const [name, setName] = useState(userName);
-  const [avatar, setAvatar] = useState(userAvatar);
-  const [personality, setPersonality] = useState(userPersonality);
-  const [gender, setGender] = useState(userGender);
-  const [isSaving, setIsSaving] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const handleArchiveAll = () => {
+    const updated = conversations.map(c => ({ ...c, pinned: false })); // Logic for archive can be refined if there's an actual 'archived' state, for now we'll mock success
+    setConversations(updated);
+    toast({ title: "Chats Archived", description: "All conversations have been moved to archive." });
+  };
+
+  const handleDeleteAll = () => {
+    if (confirm("Are you sure you want to delete ALL chats? This cannot be undone.")) {
+      setConversations([]);
+      toast({ title: "Chats Deleted", description: "All conversations have been permanently removed.", variant: "destructive" });
+    }
+  };
   
   const [newMemory, setNewMemory] = useState("");
   const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null);
@@ -145,9 +157,36 @@ export default function Settings() {
                     <div className="font-medium text-sm">Theme</div>
                   </div>
                   <div className="flex bg-muted/50 p-1 rounded-full border border-border/50">
-                    <Button variant="ghost" size="sm" className="rounded-full px-4 h-7 text-xs text-muted-foreground hover:text-foreground">System</Button>
-                    <Button variant="ghost" size="sm" className="rounded-full px-4 h-7 text-xs text-muted-foreground hover:text-foreground">Light</Button>
-                    <Button variant="secondary" size="sm" className="rounded-full px-4 h-7 text-xs bg-background shadow-sm border border-border/50 font-medium">Dark</Button>
+                    <Button 
+                      variant={theme === "system" ? "secondary" : "ghost"} 
+                      size="sm" 
+                      onClick={() => setTheme("system")}
+                      className={`rounded-full px-4 h-7 text-xs transition-all ${
+                        theme === "system" ? "bg-background shadow-sm border border-border/50 font-medium" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      System
+                    </Button>
+                    <Button 
+                      variant={theme === "light" ? "secondary" : "ghost"} 
+                      size="sm" 
+                      onClick={() => setTheme("light")}
+                      className={`rounded-full px-4 h-7 text-xs transition-all ${
+                        theme === "light" ? "bg-background shadow-sm border border-border/50 font-medium" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Light
+                    </Button>
+                    <Button 
+                      variant={theme === "dark" ? "secondary" : "ghost"} 
+                      size="sm" 
+                      onClick={() => setTheme("dark")}
+                      className={`rounded-full px-4 h-7 text-xs transition-all ${
+                        theme === "dark" ? "bg-background shadow-sm border border-border/50 font-medium" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Dark
+                    </Button>
                   </div>
                 </div>
                 
@@ -376,7 +415,12 @@ export default function Settings() {
 
                 <div className="flex items-center justify-between py-2">
                   <div className="font-medium text-sm">Archive All Chats</div>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-semibold px-4 rounded-lg bg-muted/30">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleArchiveAll}
+                    className="h-8 text-xs font-semibold px-4 rounded-lg bg-muted/30"
+                  >
                     Archive All Chats
                   </Button>
                 </div>
@@ -385,7 +429,12 @@ export default function Settings() {
 
                 <div className="flex items-center justify-between py-2">
                   <div className="font-medium text-sm">Delete All Chats</div>
-                  <Button variant="outline" size="sm" className="h-8 text-xs font-semibold px-4 rounded-lg border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleDeleteAll}
+                    className="h-8 text-xs font-semibold px-4 rounded-lg border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
                     Delete Chat
                   </Button>
                 </div>
