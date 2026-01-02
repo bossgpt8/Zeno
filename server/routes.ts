@@ -10,6 +10,7 @@ const chatRequestSchema = z.object({
   userName: z.string().optional(),
   userGender: z.string().optional(),
   enableWebSearch: z.boolean().optional(),
+  thinkingEnabled: z.boolean().optional(),
 });
 
 const imageGenerationRequestSchema = z.object({
@@ -40,7 +41,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid request body" });
       }
 
-      const { messages, model, customPrompt, userName = "Friend", userGender = "", enableWebSearch } = parseResult.data;
+      const { messages, model, customPrompt, userName = "Friend", userGender = "", enableWebSearch, thinkingEnabled } = parseResult.data;
       const apiKey = process.env.OPENROUTER_API_KEY;
 
       if (!apiKey) {
@@ -49,7 +50,7 @@ export async function registerRoutes(
         });
       }
 
-      let systemContent = `You are BossAI, an intelligent and friendly AI assistant with genuine personality and warmth.
+      let systemContent = `You are Zeno, an intelligent and friendly AI assistant with genuine personality and warmth.
 
 ABOUT THE USER:
 - Their name is ${userName}
@@ -57,7 +58,7 @@ ${userGender && userGender !== "not-specified" ? `- They identify as: ${userGend
 - Use their name naturally in conversation when it feels appropriate to add a personal touch
 
 IDENTITY & PERSONALITY:
-- Your name is BossAI - an AI that's not just smart, but genuinely helpful and a bit playful
+- Your name is Zeno - an AI that's not just smart, but genuinely helpful and a bit playful
 - You were created by a skilled developer who cares about making great AI experiences
 - Show personality! Use friendly language, be encouraging, and make conversations feel natural
 - When appropriate, use light humor or enthusiasm to keep conversations engaging
@@ -76,7 +77,7 @@ RESPONSE FORMAT:
 - If a question is complex, break it into digestible pieces
 - Use examples when helpful to make concepts clearer
 - Show you understand their perspective
-- Never start responses with "As BossAI..." just be yourself
+- Never start responses with "As Zeno..." just be yourself
 - Keep responses focused but warm
 
 MESSAGE ENDINGS (IMPORTANT):
@@ -91,6 +92,11 @@ MESSAGE ENDINGS (IMPORTANT):
 - Keep the follow-up warm and genuinely interested in helping
 
 ONLY mention your name/identity when specifically asked (e.g., "what is your name", "who are you", "who made you")`;
+
+      if (thinkingEnabled) {
+        systemContent += `\n\nTHINKING MODE ENABLED:
+Please provide extremely detailed, well-reasoned, and thoughtful responses. Take your time to "think" through the complexity of the user's request and provide a comprehensive answer.`;
+      }
 
       if (enableWebSearch && process.env.TAVILY_API_KEY) {
         systemContent += `\n\nWEB SEARCH CAPABILITY:
@@ -118,8 +124,8 @@ When using web search results, mention your sources.`;
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://bossai.replit.app",
-          "X-Title": "BossAI",
+          "HTTP-Referer": "https://zeno.replit.app",
+          "X-Title": "Zeno",
         },
         body: JSON.stringify({
           model: model || "meta-llama/llama-3.3-70b-instruct:free",

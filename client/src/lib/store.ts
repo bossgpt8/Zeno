@@ -63,6 +63,12 @@ interface ChatState {
   currentModel: string;
   setCurrentModel: (model: string) => void;
   
+  thinkingEnabled: boolean;
+  setThinkingEnabled: (enabled: boolean) => void;
+  
+  searchEnabled: boolean;
+  setSearchEnabled: (enabled: boolean) => void;
+  
   customSystemPrompt: string;
   setCustomSystemPrompt: (prompt: string) => void;
   
@@ -302,6 +308,8 @@ export const useChatStore = create<ChatState>()(
         conversations: state.conversations,
         currentConversationId: state.currentConversationId,
         currentModel: state.currentModel,
+        thinkingEnabled: state.thinkingEnabled,
+        searchEnabled: state.searchEnabled,
         voiceEnabled: state.voiceEnabled,
         customSystemPrompt: state.customSystemPrompt,
         hasSeenOnboarding: state.hasSeenOnboarding,

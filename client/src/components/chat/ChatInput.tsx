@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ImagePlus, X, Loader2 } from "lucide-react";
+import { Send, ImagePlus, X, Loader2, Brain, Search, Plus, Mic, Image as ImageIcon, Code, BookOpen, GraduationCap, Video, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useChatStore } from "@/lib/store";
+import { AI_MODELS } from "@shared/schema";
 
 interface ChatInputProps {
   onSend: (message: string, images: string[]) => void;
@@ -25,8 +27,10 @@ export function ChatInput({
   disabled,
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { thinkingEnabled, setThinkingEnabled, searchEnabled, setSearchEnabled, setCurrentModel } = useChatStore();
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -45,20 +49,16 @@ export function ChatInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Check if device is mobile (touch device or small screen)
     const isMobile = window.innerWidth < 768 || 
                      (navigator.maxTouchPoints !== undefined && navigator.maxTouchPoints > 2);
     
     if (e.key === "Enter") {
       if (isMobile) {
-        // On mobile: Shift+Enter sends, regular Enter creates new line
         if (e.shiftKey) {
           e.preventDefault();
           handleSubmit();
         }
-        // Allow regular Enter to create new line
       } else {
-        // On desktop: Regular Enter sends, Shift+Enter creates new line
         if (!e.shiftKey) {
           e.preventDefault();
           handleSubmit();
@@ -69,8 +69,12 @@ export function ChatInput({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
     
+    setIsUploading(true);
+    let loadedCount = 0;
+    const totalFiles = files.length;
+
     Array.from(files).forEach((file) => {
       if (file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -79,8 +83,17 @@ export function ChatInput({
           if (typeof result === "string") {
             onAddImage(result);
           }
+          loadedCount++;
+          if (loadedCount === totalFiles) setIsUploading(false);
+        };
+        reader.onerror = () => {
+          loadedCount++;
+          if (loadedCount === totalFiles) setIsUploading(false);
         };
         reader.readAsDataURL(file);
+      } else {
+        loadedCount++;
+        if (loadedCount === totalFiles) setIsUploading(false);
       }
     });
     
@@ -91,35 +104,60 @@ export function ChatInput({
 
   const handlePaste = (e: React.ClipboardEvent) => {
     const items = Array.from(e.clipboardData.items);
+    let imageFound = false;
     for (const item of items) {
       if (item.type.startsWith("image/")) {
-        e.preventDefault();
-        const file = item.getAsFile();
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const result = e.target?.result;
-            if (typeof result === "string") {
-              onAddImage(result);
-            }
-          };
-          reader.readAsDataURL(file);
+        imageFound = true;
+        break;
+      }
+    }
+
+    if (imageFound) {
+      setIsUploading(true);
+      let processed = 0;
+      const totalImages = items.filter(i => i.type.startsWith("image/")).length;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const result = e.target?.result;
+              if (typeof result === "string") {
+                onAddImage(result);
+              }
+              processed++;
+              if (processed === totalImages) setIsUploading(false);
+            };
+            reader.onerror = () => {
+              processed++;
+              if (processed === totalImages) setIsUploading(false);
+            };
+            reader.readAsDataURL(file);
+          }
         }
       }
     }
   };
 
-  const AudioWaves = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="10" width="2" height="4" fill="currentColor" rx="1" />
-      <rect x="11" y="7" width="2" height="10" fill="currentColor" rx="1" />
-      <rect x="17" y="10" width="2" height="4" fill="currentColor" rx="1" />
-    </svg>
-  );
+  const featureTags = [
+    { label: "Image Edit", icon: ImageIcon, model: "qwen/qwen-2.5-vl-7b-instruct:free" },
+    { label: "Web Dev", icon: Code, model: "qwen/qwen3-coder:free" },
+    { label: "Learn", icon: BookOpen, model: "mistralai/mistral-small-3.1-24b-instruct:free" },
+    { label: "Deep Research", icon: GraduationCap, model: "deepseek/deepseek-r1:free" },
+    { label: "Image Generation", icon: ImageIcon, model: "black-forest-labs/FLUX.1-schnell" },
+    { label: "Video Generation", icon: Video, model: "nvidia/nemotron-nano-12b-v2-vl:free" },
+  ];
+
+  const handleTagClick = (modelId: string) => {
+    setCurrentModel(modelId);
+  };
 
   return (
-    <div className="border-t border-border bg-background/80 backdrop-blur-md p-3 md:p-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="border-t border-border bg-background/80 backdrop-blur-md p-3 md:p-4 pb-6">
+      <div className="max-w-3xl mx-auto space-y-4">
         {attachedImages.length > 0 && (
           <div className="flex gap-2 mb-3 overflow-x-auto pb-2">
             {attachedImages.map((img, i) => (
@@ -128,12 +166,10 @@ export function ChatInput({
                   src={img}
                   alt={`Attached ${i + 1}`}
                   className="w-20 h-20 md:w-[90px] md:h-[90px] object-cover rounded-lg border-2 border-border"
-                  data-testid={`preview-image-${i}`}
                 />
                 <button
                   onClick={() => onRemoveImage(i)}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-sm"
-                  data-testid={`button-remove-image-${i}`}
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center shadow-sm"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -141,75 +177,98 @@ export function ChatInput({
             ))}
           </div>
         )}
-        
-        <div className="flex items-end gap-2 md:gap-3">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleFileChange}
+
+        <div className="relative bg-muted/30 rounded-2xl border border-border focus-within:border-primary/50 transition-colors px-4 py-3">
+          <Textarea
+            ref={textareaRef}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            placeholder="How can I help you today?"
+            disabled={disabled || isGenerating}
+            className="min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent p-0 text-sm md:text-base focus-visible:ring-0 shadow-none"
+            rows={1}
           />
-          
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={disabled || isGenerating}
-            className="flex-shrink-0"
-            data-testid="button-attach-image"
-          >
-            <ImagePlus className="w-5 h-5" />
-          </Button>
-          
-          <div className="flex-1 relative group">
-            <Textarea
-              ref={textareaRef}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onPaste={handlePaste}
-              placeholder="Message BossAI..."
-              disabled={disabled || isGenerating}
-              className="min-h-[44px] max-h-[200px] resize-none pr-12 text-sm md:text-base transition-all duration-200"
-              rows={1}
-              data-testid="input-chat-message"
-            />
-            <Button
-              size="icon"
-              variant="ghost"
-              className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => window.open('https://replit.com', '_blank')}
-            >
-              <span className="text-lg font-bold">?</span>
-            </Button>
+
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50">
+            <div className="flex items-center gap-2">
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-8 w-8 rounded-full border-border/50"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading || isGenerating}
+              >
+                {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              </Button>
+              <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
+              
+              <div className="flex items-center bg-muted/50 rounded-full p-0.5 border border-border/50">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 px-3 rounded-full text-xs font-medium transition-colors ${thinkingEnabled ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}
+                  onClick={() => setThinkingEnabled(!thinkingEnabled)}
+                >
+                  <Brain className="w-3.5 h-3.5 mr-1.5" />
+                  Thinking
+                </Button>
+                <div className="w-[1px] h-3 bg-border/50 mx-0.5" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 px-3 rounded-full text-xs font-medium transition-colors ${searchEnabled ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}
+                  onClick={() => setSearchEnabled(!searchEnabled)}
+                >
+                  <Search className="w-3.5 h-3.5 mr-1.5" />
+                  Search
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                size="icon"
+                variant="ghost"
+                className={`h-10 w-10 rounded-full ${isRecording ? "bg-primary text-primary-foreground animate-pulse" : "text-muted-foreground hover:bg-muted"}`}
+                onClick={onToggleRecording}
+                disabled={isGenerating}
+              >
+                <Mic className="w-5 h-5" />
+              </Button>
+              
+              <Button
+                size="icon"
+                disabled={isGenerating || (!message.trim() && attachedImages.length === 0)}
+                onClick={handleSubmit}
+                className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+              >
+                {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+              </Button>
+            </div>
           </div>
-          
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-2 pt-2">
+          {featureTags.map((tag) => (
+            <Button
+              key={tag.label}
+              variant="outline"
+              size="sm"
+              className="h-8 rounded-full bg-background border-border/50 hover:bg-muted text-xs gap-1.5"
+              onClick={() => handleTagClick(tag.model)}
+            >
+              <tag.icon className="w-3.5 h-3.5 text-muted-foreground" />
+              {tag.label}
+            </Button>
+          ))}
           <Button
-            size="icon"
-            onClick={onToggleRecording}
-            disabled={disabled || isGenerating}
-            className={`flex-shrink-0 h-10 w-10 rounded-full bg-accent hover:opacity-90 text-accent-foreground ${
-              isRecording ? "animate-pulse" : ""
-            }`}
-            data-testid="button-voice-input"
+            variant="outline"
+            size="sm"
+            className="h-8 rounded-full bg-background border-border/50 hover:bg-muted text-xs"
           >
-            <AudioWaves />
-          </Button>
-          
-          <Button
-            size="icon"
-            onClick={handleSubmit}
-            disabled={disabled || isGenerating || (!message.trim() && attachedImages.length === 0)}
-            className="flex-shrink-0"
-            data-testid="button-send-message"
-          >
-            {isGenerating ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Send className="w-5 h-5" />
-            )}
+            More
           </Button>
         </div>
       </div>

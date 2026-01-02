@@ -39,6 +39,8 @@ export default function Chat() {
     messages,
     currentConversationId,
     currentModel,
+    thinkingEnabled,
+    searchEnabled,
     isGenerating,
     attachedImages,
     voiceEnabled,
@@ -355,7 +357,8 @@ export default function Chat() {
             customPrompt: customSystemPrompt,
             userName,
             userGender,
-            enableWebSearch: true,
+            enableWebSearch: searchEnabled,
+            thinkingEnabled: thinkingEnabled,
           }),
         }, 60000);
 

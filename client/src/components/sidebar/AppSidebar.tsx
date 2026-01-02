@@ -533,7 +533,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                     <Label htmlFor="system-prompt">Custom System Prompt</Label>
                     <Textarea
                       id="system-prompt"
-                      placeholder="Add custom instructions for how BossAI should respond..."
+                      placeholder="Add custom instructions for how Zeno should respond..."
                       value={tempPrompt}
                       onChange={(e) => setTempPrompt(e.target.value)}
                       className="min-h-[150px]"
