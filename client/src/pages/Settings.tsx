@@ -26,6 +26,15 @@ const TABS = [
   { id: "about", label: "About", icon: Info },
 ];
 
+const AVATAR_OPTIONS = [
+  { id: "avatar-1", label: "Avatar 1", image: avatar1 },
+  { id: "avatar-2", label: "Avatar 2", image: avatar2 },
+  { id: "avatar-3", label: "Avatar 3", image: avatar3 },
+  { id: "avatar-4", label: "Avatar 4", image: avatar4 },
+  { id: "avatar-5", label: "Avatar 5", image: avatar5 },
+  { id: "avatar-6", label: "Avatar 6", image: avatar6 },
+];
+
 export default function Settings() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
