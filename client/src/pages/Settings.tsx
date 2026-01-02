@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Trash2, Edit2, Save, Plus, User, Sliders, Brain, Info, Monitor, Layout, Globe, Volume2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -165,6 +166,42 @@ export default function Settings() {
                   <Button variant="ghost" className="text-sm text-muted-foreground hover:text-foreground gap-2 h-auto py-1 px-2">
                     Katerina <ChevronRight className="w-3 h-3" />
                   </Button>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-8 border-t border-border/50">
+                <Button variant="ghost" onClick={() => setLocation("/")} className="text-sm">Cancel</Button>
+                <Button onClick={handleSave} disabled={isSaving} className="text-sm">
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "interface" && (
+            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
+              <h2 className="text-2xl font-bold">Interface</h2>
+
+              <div className="space-y-6">
+                <div className="text-sm font-semibold text-muted-foreground pt-4">Chat</div>
+                
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Title Auto-Generation</div>
+                  <Switch defaultChecked className="data-[state=checked]:bg-primary" />
+                </div>
+                
+                <Separator className="opacity-50" />
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Auto-Copy Response to Clipboard</div>
+                  <Switch className="data-[state=checked]:bg-primary" />
+                </div>
+
+                <Separator className="opacity-50" />
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Paste Large Text as File</div>
+                  <Switch defaultChecked className="data-[state=checked]:bg-primary" />
                 </div>
               </div>
 
