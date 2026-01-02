@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Zap, Code, Sparkles, BookOpen, Lightbulb, Brush, Image as ImageIcon, GraduationCap, Video, HelpCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,14 @@ const featureTags = [
 
 export function WelcomeScreen({ onSuggestionClick }: WelcomeScreenProps) {
   const { setCurrentModel } = useChatStore();
+  const [greeting, setGreeting] = useState("");
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning");
+    else if (hour < 17) setGreeting("Good afternoon");
+    else setGreeting("Good evening");
+  }, []);
 
   const handleTagClick = (modelId: string) => {
     setCurrentModel(modelId);
@@ -83,7 +92,7 @@ export function WelcomeScreen({ onSuggestionClick }: WelcomeScreenProps) {
             className="text-3xl md:text-4xl font-bold text-center mb-2"
             data-testid="text-welcome-title"
           >
-            Good afternoon, Boss
+            {greeting}, Boss
           </h1>
           
           <h2 
