@@ -50,6 +50,14 @@ export function OnboardingTutorial({ onComplete }: OnboardingTutorialProps) {
           width: rect.width,
           height: rect.height,
         });
+      } else {
+        // Fallback for missing elements
+        setCoords({
+          top: window.innerHeight / 2,
+          left: window.innerWidth / 2,
+          width: 0,
+          height: 0,
+        });
       }
     };
 
@@ -101,11 +109,11 @@ export function OnboardingTutorial({ onComplete }: OnboardingTutorialProps) {
           className="absolute z-[102] w-[280px] bg-card border border-card-border rounded-2xl p-5 shadow-2xl pointer-events-auto"
           style={{
             top: step.position === "bottom" ? coords.top + coords.height + 16 : 
-                 step.position === "top" ? coords.top - 200 :
-                 coords.top,
-            left: step.position === "right" ? coords.left + coords.width + 16 :
-                  step.position === "left" ? coords.left - 300 :
-                  coords.left,
+                 step.position === "top" ? Math.max(16, coords.top - 200) :
+                 Math.max(16, coords.top),
+            left: step.position === "right" ? Math.min(window.innerWidth - 300, coords.left + coords.width + 16) :
+                  step.position === "left" ? Math.max(16, coords.left - 300) :
+                  Math.max(16, Math.min(window.innerWidth - 300, coords.left)),
           }}
         >
           <div className="flex items-start justify-between mb-3">
