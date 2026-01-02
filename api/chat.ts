@@ -5,6 +5,7 @@ const chatRequestSchema = z.object({
   messages: z.array(z.any()),
   model: z.string(),
   customPrompt: z.string().optional(),
+  memories: z.array(z.string()).optional(),
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -18,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Invalid request body' });
     }
 
-    const { messages, model, customPrompt } = parseResult.data;
+    const { messages, model, customPrompt, memories } = parseResult.data;
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
@@ -45,6 +46,10 @@ RESPONSE STYLE:
 
     if (customPrompt) {
       systemContent += `\n\nAdditional User Instructions:\n${customPrompt}`;
+    }
+
+    if (memories && memories.length > 0) {
+      systemContent += `\n\nRELEVANT MEMORIES OF THE USER:\n${memories.map(m => "- " + m).join("\n")}`;
     }
 
     const systemMessage = {

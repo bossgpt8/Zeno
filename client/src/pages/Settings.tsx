@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trash2, Edit2, Save, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,10 @@ export default function Settings() {
     setUserAvatar,
     setUserPersonality,
     setUserGender,
+    memories,
+    addMemory,
+    deleteMemory,
+    updateMemory,
   } = useChatStore();
 
   const [name, setName] = useState(userName);
@@ -59,6 +63,29 @@ export default function Settings() {
   const [personality, setPersonality] = useState(userPersonality);
   const [gender, setGender] = useState(userGender);
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [newMemory, setNewMemory] = useState("");
+  const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null);
+  const [editingMemoryContent, setEditingMemoryContent] = useState("");
+
+  const handleAddMemory = () => {
+    if (newMemory.trim()) {
+      addMemory(newMemory.trim());
+      setNewMemory("");
+    }
+  };
+
+  const startEditing = (id: string, content: string) => {
+    setEditingMemoryId(id);
+    setEditingMemoryContent(content);
+  };
+
+  const saveEditedMemory = () => {
+    if (editingMemoryId && editingMemoryContent.trim()) {
+      updateMemory(editingMemoryId, editingMemoryContent.trim());
+      setEditingMemoryId(null);
+    }
+  };
 
   const handleSave = async () => {
     const cleanName = (name || "").trim().slice(0, 100);
@@ -195,6 +222,74 @@ export default function Settings() {
                   </Button>
                 ))}
               </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-base font-semibold mb-6">AI Memory</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Things Zeno remembers about you. These are used to personalize your conversations.
+          </p>
+          
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Input 
+                placeholder="Add something for Zeno to remember..."
+                value={newMemory}
+                onChange={(e) => setNewMemory(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAddMemory()}
+              />
+              <Button onClick={handleAddMemory} size="icon">
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              {memories.length === 0 ? (
+                <div className="text-center py-8 border-2 border-dashed rounded-xl text-muted-foreground text-sm">
+                  No memories yet. Tell Zeno "Remember that..." or add one here.
+                </div>
+              ) : (
+                memories.map((memory) => (
+                  <div key={memory.id} className="flex items-center gap-2 p-3 bg-muted/30 rounded-xl border border-border group">
+                    {editingMemoryId === memory.id ? (
+                      <>
+                        <Input 
+                          value={editingMemoryContent}
+                          onChange={(e) => setEditingMemoryContent(e.target.value)}
+                          className="flex-1"
+                        />
+                        <Button size="icon" variant="ghost" onClick={saveEditedMemory}>
+                          <Save className="w-4 h-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex-1 text-sm">{memory.content}</div>
+                        <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-8 w-8" 
+                            onClick={() => startEditing(memory.id, memory.content)}
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-8 w-8 text-destructive"
+                            onClick={() => deleteMemory(memory.id)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </Card>

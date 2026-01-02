@@ -30,6 +30,20 @@ export const messageSchema = z.object({
 export type Message = z.infer<typeof messageSchema>;
 
 // Conversation model
+export const memories = pgTable("memories", {
+  id: varchar("id", { length: 128 }).primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id", { length: 128 }),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertMemorySchema = createInsertSchema(memories).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertMemory = z.infer<typeof insertMemorySchema>;
+export type Memory = typeof memories.$inferSelect;
+
 export const conversations = pgTable("conversations", {
   id: varchar("id", { length: 128 }).primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id", { length: 128 }),

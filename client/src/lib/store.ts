@@ -88,6 +88,11 @@ interface ChatState {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   
+  memories: { id: string; content: string }[];
+  addMemory: (content: string) => void;
+  deleteMemory: (id: string) => void;
+  updateMemory: (id: string, content: string) => void;
+  
   createNewConversation: () => string;
   deleteConversation: (id: string) => void;
   updateConversationTitle: (id: string, title: string) => void;
@@ -237,6 +242,17 @@ export const useChatStore = create<ChatState>()(
       sidebarOpen: false,
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
       
+      memories: [],
+      addMemory: (content) => set((state) => ({
+        memories: [...state.memories, { id: nanoid(), content }]
+      })),
+      deleteMemory: (id) => set((state) => ({
+        memories: state.memories.filter(m => m.id !== id)
+      })),
+      updateMemory: (id, content) => set((state) => ({
+        memories: state.memories.map(m => m.id === id ? { ...m, content } : m)
+      })),
+      
       createNewConversation: () => {
         const id = nanoid();
         const newConversation: Conversation = {
@@ -321,6 +337,7 @@ export const useChatStore = create<ChatState>()(
         userAvatar: state.userAvatar,
         userPersonality: state.userPersonality,
         userGender: state.userGender,
+        memories: state.memories,
       }),
     }
   )
