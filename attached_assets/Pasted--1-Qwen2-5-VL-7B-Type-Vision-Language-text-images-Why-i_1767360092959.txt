@@ -1,0 +1,50 @@
+#1: Qwen2.5-VL-7B
+Type: Vision-Language (text + images)
+Why it wins:
+
+✅ Best-in-class 7B VL model — understands screenshots, UIs, diagrams.
+✅ Handles “Edit this image”, “Fix the typo in this mockup”, “Describe this chart” natively.
+✅ Runs fast on consumer hardware (even CPU with GGUF quantization).
+✅ Free via Hugging Face, OpenRouter, or self-hosted.
+✅ Strong in both English & Chinese (great for global users).
+Best for: Default mode — your Image Edit, Learn, and Problem Solver cards.
+
+🥈 #2: FLUX.1 Schnell
+Type: Image Generation (text-to-image)
+Why it’s #2:
+
+✅ Fastest high-quality image model — outperforms SDXL & DALL·E 3 in speed/quality trade-off.
+✅ MIT-licensed → safe for commercial use (unlike some SDXL variants).
+✅ Great prompt adherence — ideal for UI mockups, logos, social assets.
+✅ Integrates cleanly with your Image generation card.
+Best for: Your Image generation card — set as default “Premium” option.
+
+🥉 #3: Mistral Small 3.1
+Type: Text-only (but ultra-efficient)
+Why it’s top 3:
+
+✅ 128K context — handles full documents, codebases, research papers.
+✅ Near-Llama-3.3-70B quality at ~1/5 the cost (~$0.15/million tokens).
+✅ Blazing fast inference (ideal for chat UX).
+✅ Strong instruction-following — perfect for Explain, Brainstorm, and Code help.
+Best for: Default text backbone when no image is involved.
+
+🏅 #4: Qwen3 Coder
+Type: Code-specialized LLM
+Why it stands out:
+
+✅ Trained specifically on modern code (TS, Python, Rust, etc.).
+✅ Beats general models (even Llama-3.3-70B) on HumanEval & real-world debugging.
+✅ Understands project context — great for Web Dev and Code help cards.
+✅ Open weights (Apache 2.0) — safe to self-host.
+Best for: Your Web Dev and Code help workflows — swap in automatically when user asks for coding.
+
+🏅 #5: Nemotron Nano 12B-VL
+Type: Multimodal (vision + video + documents)
+Why it’s rising fast:
+
+✅ NVIDIA-backed — excellent engineering & tooling (TensorRT-LLM support).
+✅ First open VL model to handle video frames & PDF diagrams natively.
+✅ 12B size → better reasoning than Qwen-VL-7B, still efficient.
+✅ Future-proofs BossAI for video tutorials, screen recordings, and slide decks.
+Best for: Pro tier — when users upload videos, presentations, or complex docs.

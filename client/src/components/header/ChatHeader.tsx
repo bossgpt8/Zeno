@@ -1,15 +1,15 @@
 import { Menu, Moon, Sun, Palette, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button as BaseButton } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useTheme, ACCENT_COLORS } from "@/components/ThemeProvider";
-import { AI_MODELS } from "@shared/schema";
 import bossaiRobot from "@assets/bossai-robot.png";
 import { useLocation } from "wouter";
+import { ModelSelector } from "@/components/sidebar/ModelSelector";
+import { useChatStore } from "@/lib/store";
 
 interface ChatHeaderProps {
   currentModel: string;
@@ -26,20 +26,13 @@ export function ChatHeader({
 }: ChatHeaderProps) {
   const { theme, accentColor, toggleTheme, setAccentColor } = useTheme();
   const [, setLocation] = useLocation();
+  const { setCurrentModel } = useChatStore();
   
-  const getModelName = (modelId: string): string => {
-    for (const category of Object.values(AI_MODELS)) {
-      const model = category.find((m) => m.id === modelId);
-      if (model) return model.name;
-    }
-    return "Llama 3.3 70B";
-  };
-
   return (
     <header className="px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 md:gap-4">
-          <Button
+          <BaseButton
             size="icon"
             variant="ghost"
             className="lg:hidden"
@@ -47,7 +40,7 @@ export function ChatHeader({
             data-testid="button-toggle-sidebar"
           >
             <Menu className="w-5 h-5" />
-          </Button>
+          </BaseButton>
           
           <img 
             src={bossaiRobot} 
@@ -56,13 +49,11 @@ export function ChatHeader({
             data-testid="img-bossai-header"
           />
           
-          <Badge variant="secondary" className="text-xs font-medium" data-testid="badge-current-model">
-            {getModelName(currentModel)}
-          </Badge>
+          <ModelSelector value={currentModel} onChange={setCurrentModel} />
         </div>
         
         <div className="flex items-center gap-1 md:gap-2">
-          <Button
+          <BaseButton
             size="icon"
             variant="ghost"
             onClick={() => setLocation("/settings")}
@@ -70,18 +61,18 @@ export function ChatHeader({
             data-testid="button-settings"
           >
             <Settings className="w-4 h-4 md:w-5 md:h-5" />
-          </Button>
+          </BaseButton>
 
           <Popover>
             <PopoverTrigger asChild>
-              <Button
+              <BaseButton
                 size="icon"
                 variant="ghost"
                 title="Change accent color"
                 data-testid="button-accent-color"
               >
                 <Palette className="w-4 h-4 md:w-5 md:h-5" />
-              </Button>
+              </BaseButton>
             </PopoverTrigger>
             <PopoverContent className="w-48 p-3" align="end">
               <p className="text-sm font-medium mb-3 text-foreground">Accent Color</p>
@@ -106,7 +97,7 @@ export function ChatHeader({
             </PopoverContent>
           </Popover>
           
-          <Button
+          <BaseButton
             size="icon"
             variant="ghost"
             onClick={toggleTheme}
@@ -121,7 +112,7 @@ export function ChatHeader({
                 <Moon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
               )}
             </div>
-          </Button>
+          </BaseButton>
         </div>
       </div>
     </header>

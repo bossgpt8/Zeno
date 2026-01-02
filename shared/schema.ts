@@ -50,11 +50,15 @@ export type Conversation = typeof conversations.$inferSelect;
 
 // AI Models configuration
 export const AI_MODELS = {
+  best: [
+    { id: "qwen/qwen-2.5-vl-7b-instruct:free", name: "Qwen 2.5 VL 7B", description: "Best-in-class - understands screenshots, UIs, diagrams" },
+    { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell", description: "Fastest high-quality image generation" },
+    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small 3.1", description: "Ultra-efficient with 128K context" },
+    { id: "qwen/qwen3-coder:free", name: "Qwen 3 Coder", description: "Specialized for modern code projects" },
+    { id: "nvidia/nemotron-nano-12b-v2-vl:free", name: "Nemotron Nano 12B VL", description: "Multimodal - handles video & complex docs" },
+  ],
   vision: [
-    { id: "nvidia/nemotron-nano-12b-v2-vl:free", name: "Nemotron Nano 12B 2 VL", description: "NVIDIA multimodal - video & documents" },
     { id: "google/gemma-3-27b-it:free", name: "Gemma 3 27B", description: "Vision with 131K context" },
-    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small 3.1", description: "Vision with 128K context" },
-    { id: "qwen/qwen-2.5-vl-7b-instruct:free", name: "Qwen 2.5 VL 7B", description: "Video understanding" },
     { id: "google/gemma-3-12b-it:free", name: "Gemma 3 12B", description: "Vision with 32K context" },
     { id: "google/gemma-3-4b-it:free", name: "Gemma 3 4B", description: "Lightweight vision" },
   ],
@@ -69,17 +73,14 @@ export const AI_MODELS = {
     { id: "openai/gpt-oss-20b:free", name: "GPT OSS 20B", description: "OpenAI open source" },
     { id: "openai/gpt-oss-120b:free", name: "GPT OSS 120B", description: "OpenAI 120B large" },
     { id: "mistralai/mistral-7b-instruct:free", name: "Mistral 7B", description: "Compact and fast" },
-    { id: "mistralai/mistral-small-3.1-24b-instruct:free", name: "Mistral Small 3.1", description: "Efficient and capable" },
     { id: "meta-llama/llama-3.2-3b-instruct:free", name: "Llama 3.2 3B", description: "Lightweight model" },
     { id: "nousresearch/hermes-3-llama-3.1-405b:free", name: "Hermes 3 Llama 3.1 405B", description: "Research optimized" },
   ],
   image: [
-    { id: "black-forest-labs/FLUX.1-schnell", name: "FLUX.1 Schnell", description: "Best quality - fastest" },
     { id: "stabilityai/stable-diffusion-xl-base-1.0", name: "SDXL Base", description: "Reliable quality" },
     { id: "stabilityai/stable-diffusion-v1-5", name: "SD 1.5", description: "Popular and fast" },
   ],
   code: [
-    { id: "qwen/qwen3-coder:free", name: "Qwen 3 Coder", description: "Specialized for code generation" },
     { id: "kwaipilot/kat-coder-pro:free", name: "KwaiPilot KAT Coder Pro", description: "Professional coding assistant" },
   ],
 } as const;
