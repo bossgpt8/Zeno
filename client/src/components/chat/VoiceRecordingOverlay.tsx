@@ -1,5 +1,6 @@
-import { Mic, X } from "lucide-react";
+import { Mic, X, MoreHorizontal, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useChatStore } from "@/lib/store";
 
 interface VoiceRecordingOverlayProps {
   isRecording: boolean;
@@ -7,46 +8,72 @@ interface VoiceRecordingOverlayProps {
 }
 
 export function VoiceRecordingOverlay({ isRecording, onStop }: VoiceRecordingOverlayProps) {
+  const { currentModel } = useChatStore();
+  
   if (!isRecording) return null;
+
+  // Extract model name for display
+  const modelName = currentModel.split("/").pop()?.split(":").shift() || currentModel;
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-[#0a0a0a]"
       data-testid="voice-recording-overlay"
     >
-      <div className="flex flex-col items-center gap-6 p-8">
-        <div className="relative">
-          <div className="absolute inset-0 animate-ping rounded-full bg-destructive/30" />
-          <div className="absolute inset-0 animate-pulse rounded-full bg-destructive/50" style={{ animationDelay: '0.2s' }} />
-          <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-destructive">
-            <Mic className="w-10 h-10 text-destructive-foreground animate-pulse" />
-          </div>
+      {/* Top Timer/Status */}
+      <div className="absolute top-12 px-4 py-1.5 bg-muted/50 rounded-full text-xs font-medium text-muted-foreground">
+        00:03 / 10:00
+      </div>
+
+      {/* Main Animated Circle */}
+      <div className="relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 via-fuchsia-400 to-pink-400 opacity-60 blur-3xl animate-pulse" />
+        <div className="relative w-full h-full rounded-full bg-gradient-to-br from-purple-500 via-fuchsia-500 to-pink-500 shadow-2xl flex items-center justify-center overflow-hidden">
+          {/* Subtle wave animation inside */}
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm animate-[pulse_3s_infinite]" />
         </div>
-        
-        <div className="text-center space-y-2">
-          <h3 className="text-xl font-semibold text-foreground" data-testid="text-listening-status">
-            Listening...
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            Speak now. Your message will be sent automatically.
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <span className="inline-block w-2 h-2 bg-destructive rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="inline-block w-2 h-2 bg-destructive rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="inline-block w-2 h-2 bg-destructive rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-        </div>
-        
+      </div>
+
+      {/* Bottom Controls */}
+      <div className="absolute bottom-16 w-full max-w-sm px-8 flex items-center justify-between">
         <Button
-          variant="outline"
+          variant="ghost"
+          size="icon"
           onClick={onStop}
-          className="gap-2"
+          className="w-12 h-12 rounded-full bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-950/20 dark:text-red-400"
           data-testid="button-stop-recording"
         >
-          <X className="w-4 h-4" />
-          Cancel
+          <X className="w-6 h-6" />
         </Button>
+
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex gap-1">
+            <span className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+            <span className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+            <span className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <span className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '450ms' }} />
+            <span className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '600ms' }} />
+          </div>
+          <span className="text-sm font-medium text-foreground">I'm listening</span>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-widest mt-4">
+            {modelName}
+          </span>
+        </div>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="w-12 h-12 rounded-full bg-muted/50 text-foreground hover:bg-muted"
+        >
+          <Settings2 className="w-5 h-5" />
+        </Button>
+      </div>
+
+      {/* Mic indicator at bottom right (optional placeholder matching image) */}
+      <div className="absolute bottom-16 right-8 md:right-16 lg:right-32 xl:right-64">
+        <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center text-foreground">
+          <Mic className="w-5 h-5" />
+        </div>
       </div>
     </div>
   );

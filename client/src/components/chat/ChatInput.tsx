@@ -253,7 +253,7 @@ export function ChatInput({
               <Button
                 size="icon"
                 variant="ghost"
-                className={`h-9 w-9 rounded-full transition-all duration-300 ${isRecording ? "bg-[#6366f1] text-white animate-pulse shadow-[0_0_15px_rgba(99,102,241,0.5)]" : "bg-[#6366f1] text-white hover:bg-[#4f46e5] shadow-md"}`}
+                className={`h-9 w-9 rounded-full transition-all duration-300 ${isRecording ? "bg-primary text-primary-foreground animate-pulse shadow-[0_0_15px_hsl(var(--primary)/0.5)]" : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"}`}
                 onClick={onToggleRecording}
                 disabled={isGenerating}
                 title={isRecording ? "Stop recording" : "Voice input"}

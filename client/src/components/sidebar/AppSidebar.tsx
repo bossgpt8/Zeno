@@ -206,7 +206,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             
             <Button
               onClick={handleNewChat}
-              className="w-full gap-2 mb-3 bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-lg"
+              className="w-full gap-2 mb-3 bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg"
               data-testid="button-new-chat"
             >
               <Plus className="w-4 h-4" />
