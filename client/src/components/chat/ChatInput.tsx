@@ -250,23 +250,23 @@ export function ChatInput({
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2 pt-2">
+        <div className="flex flex-wrap justify-center gap-1.5 pt-2">
           {featureTags.map((tag) => (
             <Button
               key={tag.label}
               variant="outline"
               size="sm"
-              className="h-8 rounded-full bg-background border-border/50 hover:bg-muted text-xs gap-1.5"
+              className="h-7 rounded-full bg-background border-border/50 hover:bg-muted text-[10px] md:text-xs gap-1 px-2.5"
               onClick={() => handleTagClick(tag.model)}
             >
-              <tag.icon className="w-3.5 h-3.5 text-muted-foreground" />
+              <tag.icon className="w-3 h-3 text-muted-foreground" />
               {tag.label}
             </Button>
           ))}
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-full bg-background border-border/50 hover:bg-muted text-xs"
+            className="h-7 rounded-full bg-background border-border/50 hover:bg-muted text-[10px] md:text-xs px-2.5"
           >
             More
           </Button>
