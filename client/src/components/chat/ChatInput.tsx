@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ImagePlus, X, Loader2, Brain, Search, Plus, Mic, Image as ImageIcon, Code, BookOpen, GraduationCap, Video, MoreHorizontal } from "lucide-react";
+import { Send, ImagePlus, X, Loader2, Brain, Search, Plus, AudioLines, Image as ImageIcon, Code, BookOpen, GraduationCap, Video, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useChatStore } from "@/lib/store";
@@ -253,11 +253,12 @@ export function ChatInput({
               <Button
                 size="icon"
                 variant="ghost"
-                className={`h-10 w-10 rounded-full ${isRecording ? "bg-primary text-primary-foreground animate-pulse" : "text-muted-foreground hover:bg-muted"}`}
+                className={`h-9 w-9 rounded-full transition-all duration-300 ${isRecording ? "bg-[#6366f1] text-white animate-pulse shadow-[0_0_15px_rgba(99,102,241,0.5)]" : "bg-[#6366f1] text-white hover:bg-[#4f46e5] shadow-md"}`}
                 onClick={onToggleRecording}
                 disabled={isGenerating}
+                title={isRecording ? "Stop recording" : "Voice input"}
               >
-                <Mic className="w-5 h-5" />
+                <AudioLines className="w-5 h-5" />
               </Button>
               
               <Button
