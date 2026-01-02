@@ -1,4 +1,5 @@
-import { Zap, Plus, User, LogOut, Search, Settings, X, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import zenoLogo from "@assets/image_1767364441563.png";
+import { Plus, User, LogOut, Search, Settings, X, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -195,8 +196,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       >
         <div className="p-4 md:p-5 border-b border-sidebar-border">
           <div className="flex items-center gap-3 mb-4 md:mb-5">
-            <div className="w-9 h-9 md:w-10 md:h-10 bg-primary rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center overflow-hidden border border-border/50 bg-muted">
+              <img src={zenoLogo} alt="Zeno" className="w-full h-full object-cover" />
             </div>
             <span className="text-base md:text-lg font-bold text-sidebar-foreground">Zeno</span>
           </div>
@@ -474,8 +475,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           <Dialog open={showWarning} onOpenChange={setShowWarning}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle className="flex items-center gap-2 text-amber-500">
-                  <Zap className="h-5 w-5" />
+                <DialogTitle className="flex items-center gap-2 text-primary">
+                  <div className="w-6 h-6 rounded-md overflow-hidden">
+                    <img src={zenoLogo} alt="Zeno" className="w-full h-full object-cover" />
+                  </div>
                   Local Storage Notice
                 </DialogTitle>
                 <DialogDescription className="pt-2">
