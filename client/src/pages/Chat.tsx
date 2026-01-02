@@ -51,10 +51,12 @@ export default function Chat() {
     hasSeenSettings,
     hasSeenProfile,
     hasSeenAuthPrompt,
+    hasSeenTutorial,
     setHasSeenOnboarding,
     setHasSeenSettings,
     setHasSeenProfile,
     setHasSeenAuthPrompt,
+    setHasSeenTutorial,
     setUserName,
     setUserAvatar,
     setUserPersonality,
@@ -142,6 +144,18 @@ export default function Chat() {
       return () => clearTimeout(timer);
     }
   }, [user, hasSeenAuthPrompt, hasSeenOnboarding, hasSeenProfile, setSidebarOpen]);
+
+  useEffect(() => {
+    if (!hasSeenTutorial && hasSeenAuthPrompt) {
+      const timer = setTimeout(() => {
+        // Only show tutorial if not currently in another modal
+        if (!showOnboarding && !showProfileModal) {
+          // tutorial component handles its own visibility based on hasSeenTutorial
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [hasSeenTutorial, hasSeenAuthPrompt, showOnboarding, showProfileModal]);
 
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
@@ -607,6 +621,9 @@ export default function Chat() {
       <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
+        {!hasSeenTutorial && hasSeenAuthPrompt && (
+          <OnboardingTutorial onComplete={() => setHasSeenTutorial(true)} />
+        )}
         <div className="flex-shrink-0 sticky top-0 z-40 bg-background border-b border-border">
           <ChatHeader
             currentModel={currentModel}
