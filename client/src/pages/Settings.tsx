@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Trash2, Edit2, Save, Plus, User, Sliders, Brain, Info, Monitor, Layout, Globe, Volume2, ChevronRight, ChevronDown } from "lucide-react";
+import { ArrowLeft, Trash2, Edit2, Save, Plus, User, Sliders, Brain, Info, Monitor, Layout, Globe, Volume2, ChevronRight, ChevronDown, MessageSquare, Download, Upload, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -331,6 +331,55 @@ export default function Settings() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+
+              <div className="flex justify-end gap-3 pt-8 border-t border-border/50">
+                <Button variant="ghost" onClick={() => setLocation("/")} className="text-sm">Cancel</Button>
+                <Button onClick={handleSave} disabled={isSaving} className="text-sm">
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "chats" && (
+            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
+              <h2 className="text-2xl font-bold">Chats</h2>
+
+              <div className="space-y-6">
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Import Chats</div>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-semibold px-4 rounded-lg bg-muted/30">
+                    Import Chats
+                  </Button>
+                </div>
+                
+                <Separator className="opacity-50" />
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Export Chats</div>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-semibold px-4 rounded-lg bg-muted/30">
+                    Export Chats
+                  </Button>
+                </div>
+
+                <Separator className="opacity-50" />
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Archive All Chats</div>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-semibold px-4 rounded-lg bg-muted/30">
+                    Archive All Chats
+                  </Button>
+                </div>
+
+                <Separator className="opacity-50" />
+
+                <div className="flex items-center justify-between py-2">
+                  <div className="font-medium text-sm">Delete All Chats</div>
+                  <Button variant="outline" size="sm" className="h-8 text-xs font-semibold px-4 rounded-lg border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive">
+                    Delete Chat
+                  </Button>
+                </div>
+              </div>
 
               <div className="flex justify-end gap-3 pt-8 border-t border-border/50">
                 <Button variant="ghost" onClick={() => setLocation("/")} className="text-sm">Cancel</Button>
