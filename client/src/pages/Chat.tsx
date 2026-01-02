@@ -276,8 +276,53 @@ export default function Chat() {
       }
     }
 
-    // Update conversation title if first message
-    if (messages.length === 0) {
+    // Generate AI title if first message
+    if (messages.length === 0 && !isImageModel(currentModel)) {
+      (async () => {
+        try {
+          const titleResponse = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              messages: [
+                { role: "system", content: "Generate a very short, 2-4 word descriptive title for this conversation based on the user's message. Return ONLY the title text, no quotes or punctuation." },
+                { role: "user", content: content }
+              ],
+              model: currentModel,
+              max_tokens: 10
+            }),
+          });
+          if (titleResponse.ok) {
+            const reader = titleResponse.body?.getReader();
+            const decoder = new TextDecoder();
+            let aiTitle = "";
+            if (reader) {
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value);
+                const lines = chunk.split("\n");
+                for (const line of lines) {
+                  if (line.startsWith("data: ")) {
+                    try {
+                      const data = JSON.parse(line.slice(6));
+                      if (data.content) aiTitle += data.content;
+                    } catch {}
+                  }
+                }
+              }
+              if (aiTitle.trim()) {
+                updateConversationTitle(conversationId, aiTitle.trim());
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error generating AI title:", error);
+          const title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
+          updateConversationTitle(conversationId, title);
+        }
+      })();
+    } else if (messages.length === 0) {
       const title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
       updateConversationTitle(conversationId, title);
     }
