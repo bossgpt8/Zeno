@@ -426,26 +426,68 @@ export default function Settings() {
                       ))}
                     </div>
                   </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium text-muted-foreground">Gender</label>
+                    <Select value={gender} onValueChange={setGender}>
+                      <SelectTrigger className="bg-muted/20 border-border/50 focus:border-primary/50">
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="non-binary">Non-binary</SelectItem>
+                        <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium text-muted-foreground">Personality</label>
+                    <Select value={personality} onValueChange={setPersonality}>
+                      <SelectTrigger className="bg-muted/20 border-border/50 focus:border-primary/50">
+                        <SelectValue placeholder="Select personality" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="friendly">Friendly & Casual</SelectItem>
+                        <SelectItem value="professional">Professional & Formal</SelectItem>
+                        <SelectItem value="creative">Creative & Imaginative</SelectItem>
+                        <SelectItem value="scientific">Scientific & Analytical</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
               {/* Memory Section */}
               <div className="space-y-8 pt-8 border-t border-border/50">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Memory</h3>
-                  <Button variant="outline" size="sm" className="h-8 gap-2" onClick={() => setNewMemory("")}>
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-semibold">Memory</h3>
+                    <p className="text-sm text-muted-foreground">Manage what Zeno remembers about you across conversations.</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="h-8 gap-2" onClick={() => {
+                    const content = prompt("Enter new memory:");
+                    if (content) addMemory(content);
+                  }}>
                     <Plus className="w-3.5 h-3.5" /> New Memory
                   </Button>
                 </div>
                 
                 <div className="space-y-4">
                   {memories.map((memory) => (
-                    <div key={memory.id} className="p-4 rounded-xl bg-muted/30 border border-border/50 group">
+                    <div key={memory.id} className="p-4 rounded-xl bg-muted/30 border border-border/50 group hover:border-primary/30 transition-colors">
                       <div className="flex items-start justify-between gap-4">
                         <p className="text-sm flex-1 leading-relaxed">{memory.content}</p>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteMemory(memory.id)}>
-                            <Trash2 className="w-4 h-4 text-destructive" />
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                            const newContent = prompt("Edit memory:", memory.content);
+                            if (newContent) updateMemory(memory.id, newContent);
+                          }}>
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => deleteMemory(memory.id)}>
+                            <Trash2 className="w-3.5 h-3.5" />
                           </Button>
                         </div>
                       </div>
