@@ -1,4 +1,4 @@
-import { Menu, Moon, Sun, Palette, Settings } from "lucide-react";
+import { Menu, Moon, Sun, Palette, Settings, LayoutSidebar, LayoutSidebarOpen } from "lucide-react";
 import { Button as BaseButton } from "@/components/ui/button";
 import {
   Popover,
@@ -26,7 +26,7 @@ export function ChatHeader({
 }: ChatHeaderProps) {
   const { theme, accentColor, toggleTheme, setAccentColor } = useTheme();
   const [, setLocation] = useLocation();
-  const { setCurrentModel } = useChatStore();
+  const { setCurrentModel, sidebarOpen } = useChatStore();
   
   return (
     <header className="px-4 md:px-6 py-3 md:py-4 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
@@ -35,11 +35,16 @@ export function ChatHeader({
           <BaseButton
             size="icon"
             variant="ghost"
-            className="lg:hidden"
             onClick={onToggleSidebar}
             data-testid="button-toggle-sidebar"
+            className="flex"
+            title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
           >
-            <Menu className="w-5 h-5" />
+            {sidebarOpen ? (
+              <LayoutSidebar className="w-5 h-5" />
+            ) : (
+              <LayoutSidebarOpen className="w-5 h-5" />
+            )}
           </BaseButton>
           
           <img 

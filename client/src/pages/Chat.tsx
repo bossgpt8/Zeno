@@ -603,10 +603,10 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-background">
+    <div className="flex h-screen w-full bg-background overflow-hidden relative">
       <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="flex-1 flex flex-col min-w-0 h-screen">
+      <div className="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
         <div className="flex-shrink-0 sticky top-0 z-40 bg-background border-b border-border">
           <ChatHeader
             currentModel={currentModel}
@@ -684,26 +684,7 @@ export default function Chat() {
             onToggleRecording={handleToggleRecording}
           />
         </div>
-      </main>
-
-      <VoiceRecordingOverlay
-        isRecording={isRecording}
-        onStop={handleToggleRecording}
-      />
-
-      <OnboardingModal
-        isOpen={showOnboarding}
-        onClose={handleCloseOnboarding}
-      />
-
-      <ProfileModal
-        open={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-        onSaveProfile={handleSaveProfile}
-        currentName={userName}
-        currentAvatar={userAvatar}
-        currentPersonality={userPersonality}
-      />
+      </div>
     </div>
   );
 }

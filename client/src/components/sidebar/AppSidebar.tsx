@@ -190,12 +190,13 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       )}
       
       <aside
-        className={`w-72 bg-sidebar border-r border-sidebar-border flex flex-col fixed lg:relative inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        className={`bg-sidebar border-r border-sidebar-border flex flex-col absolute lg:relative inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out ${
+          isOpen ? "w-72 translate-x-0 opacity-100 visible" : "w-0 -translate-x-full opacity-0 invisible border-r-0"
         }`}
         data-testid="sidebar"
       >
-        <div className="p-4 md:p-5 border-b border-sidebar-border">
+        <div className={`flex flex-col h-full w-72 ${!isOpen && "hidden"}`}>
+          <div className="p-4 md:p-5 border-b border-sidebar-border flex-shrink-0">
           <div className="flex items-center gap-3 mb-4 md:mb-5">
             <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center overflow-hidden border border-border/50 bg-muted">
               <img src={zenoLogo} alt="Zeno" className="w-full h-full object-cover" />
