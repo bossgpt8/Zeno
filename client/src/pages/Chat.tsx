@@ -359,6 +359,7 @@ export default function Chat() {
             userGender,
             enableWebSearch: searchEnabled,
             thinkingEnabled: thinkingEnabled,
+            memories: useChatStore.getState().memories.map(m => m.content),
           }),
         }, 60000);
 
