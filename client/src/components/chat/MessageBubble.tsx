@@ -191,7 +191,7 @@ export function MessageBubble({
           ) : (
             <img 
               src={bossaiRobot} 
-              alt="BossAI" 
+              alt="Zeno" 
               className="w-full h-full object-cover"
               data-testid="img-bossai-avatar"
             />

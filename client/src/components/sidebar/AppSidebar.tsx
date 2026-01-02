@@ -198,7 +198,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             <div className="w-9 h-9 md:w-10 md:h-10 bg-primary rounded-xl flex items-center justify-center">
               <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
             </div>
-            <span className="text-base md:text-lg font-bold text-sidebar-foreground">BossAI</span>
+            <span className="text-base md:text-lg font-bold text-sidebar-foreground">Zeno</span>
           </div>
           
           <Button

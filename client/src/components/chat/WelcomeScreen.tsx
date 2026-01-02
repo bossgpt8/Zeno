@@ -82,8 +82,15 @@ export function WelcomeScreen({ onSuggestionClick }: WelcomeScreenProps) {
             className="text-3xl md:text-4xl font-bold text-center mb-2"
             data-testid="text-welcome-title"
           >
-            How can I help you today?
+            Good afternoon, Boss
           </h1>
+          
+          <h2 
+            className="text-xl md:text-2xl font-medium text-center mb-8 text-muted-foreground"
+            data-testid="text-welcome-subtitle"
+          >
+            How can I help you today?
+          </h2>
           
           <p className="text-center text-muted-foreground text-sm md:text-base px-4">
             I'm here to help — whether you're learning, creating, or solving.

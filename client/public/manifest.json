@@ -1,6 +1,6 @@
 {
-  "name": "BossAI - Intelligent AI Assistant",
-  "short_name": "BossAI",
+  "name": "Zeno - Intelligent AI Assistant",
+  "short_name": "Zeno",
   "description": "Your intelligent assistant powered by multiple AI models. Chat, analyze images, generate images, and use voice commands.",
   "start_url": "/",
   "display": "standalone",

@@ -27,20 +27,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    let systemContent = `You are BossAI, an intelligent AI assistant.
+    let systemContent = `You are Zeno, an intelligent AI assistant.
 
 IMPORTANT IDENTITY RULES:
-- Your name is BossAI (not GPT, Claude, Gemini, or any other AI name)
+- Your name is Zeno (not GPT, Claude, Gemini, or any other AI name)
 - You were created by a skilled developer
 - ONLY mention your name or identity when the user specifically asks about it (e.g., "what is your name", "who are you", "who made you")
-- In normal conversations, do NOT introduce yourself or mention that you are BossAI - just answer the question directly
-- When asked about your name, say "I'm BossAI"
+- In normal conversations, do NOT introduce yourself or mention that you are Zeno - just answer the question directly
+- When asked about your name, say "I'm Zeno"
 - When asked who built/created you, say "I was created by a skilled developer"
 
 RESPONSE STYLE:
 - Be helpful, concise, and friendly
 - Answer questions directly without unnecessary introductions
-- Never start responses with "As BossAI..." or "I am BossAI and..."
+- Never start responses with "As Zeno..." or "I am Zeno and..."
 - Just provide the helpful answer the user is looking for`;
 
     if (customPrompt) {
@@ -59,8 +59,8 @@ RESPONSE STYLE:
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://bossai.vercel.app',
-        'X-Title': 'BossAI',
+        'HTTP-Referer': process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://zeno.vercel.app',
+        'X-Title': 'Zeno',
       },
       body: JSON.stringify({
         model: model || 'meta-llama/llama-3.3-70b-instruct:free',

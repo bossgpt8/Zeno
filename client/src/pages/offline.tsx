@@ -27,7 +27,7 @@ export default function OfflineScreen({ isOnline, isLoading }: OfflineScreenProp
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl w-32 h-32 mx-auto" />
             <img 
               src={bossaiRobot} 
-              alt="BossAI" 
+              alt="Zeno" 
               className="h-24 w-auto relative z-10 drop-shadow-lg"
             />
           </div>
@@ -47,7 +47,7 @@ export default function OfflineScreen({ isOnline, isLoading }: OfflineScreenProp
                   No Connection
                 </h1>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                  BossAI is ready to chat, but needs an internet connection. Please check your connection and try again.
+                  Zeno is ready to chat, but needs an internet connection. Please check your connection and try again.
                 </p>
               </div>
             </div>
@@ -71,7 +71,7 @@ export default function OfflineScreen({ isOnline, isLoading }: OfflineScreenProp
             <div className="space-y-4 animate-fade-in">
               <div className="space-y-3">
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-                  Loading BossAI
+                  Loading Zeno
                 </h1>
                 <p className="text-base text-muted-foreground">
                   Getting everything ready for you...

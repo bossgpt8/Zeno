@@ -1,4 +1,4 @@
-# BossAI Chatbot - Design Guidelines
+# Zeno Chatbot - Design Guidelines
 
 ## Design Approach
 

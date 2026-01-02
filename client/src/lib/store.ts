@@ -303,7 +303,7 @@ export const useChatStore = create<ChatState>()(
       },
     }),
     {
-      name: "bossai-storage",
+      name: "zeno-storage",
       partialize: (state) => ({
         conversations: state.conversations,
         currentConversationId: state.currentConversationId,

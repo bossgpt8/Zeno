@@ -44,7 +44,7 @@ export function ChatHeader({
           
           <img 
             src={bossaiRobot} 
-            alt="BossAI" 
+            alt="Zeno" 
             className="h-8 md:h-9 w-auto"
             data-testid="img-bossai-header"
           />

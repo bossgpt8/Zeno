@@ -1,8 +1,8 @@
-# BossAI - Intelligent AI Chatbot
+# Zeno - Intelligent AI Chatbot
 
 ## Overview
 
-BossAI is a full-stack AI chatbot application that provides an intelligent conversational interface powered by multiple AI models. The application supports text chat, image analysis (vision models), image generation, and voice interaction. It features a modern dark-themed UI inspired by Linear's design language, with support for light/dark themes and customizable accent colors.
+Zeno is a full-stack AI chatbot application that provides an intelligent conversational interface powered by multiple AI models. The application supports text chat, image analysis (vision models), image generation, and voice interaction. It features a modern dark-themed UI inspired by Linear's design language, with support for light/dark themes and customizable accent colors.
 
 Key capabilities:
 - Multi-model AI chat via OpenRouter API (text and vision models)

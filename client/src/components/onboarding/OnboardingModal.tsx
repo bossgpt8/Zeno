@@ -14,7 +14,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     icon: MessageSquare,
     title: "Chat with AI",
-    description: "Ask any question and get intelligent responses. BossAI can help with coding, writing, math, research, and much more.",
+    description: "Ask any question and get intelligent responses. Zeno can help with coding, writing, math, research, and much more.",
     color: "text-blue-500",
   },
   {
@@ -26,13 +26,13 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     icon: Mic,
     title: "Voice Conversations",
-    description: "Click the microphone to speak your messages. BossAI can also read responses aloud when voice mode is enabled.",
+    description: "Click the microphone to speak your messages. Zeno can also read responses aloud when voice mode is enabled.",
     color: "text-green-500",
   },
   {
     icon: Settings,
     title: "Customize Your Experience",
-    description: "Set your name, choose an avatar, personalize your personality style, and configure gender preferences to make BossAI truly yours.",
+    description: "Set your name, choose an avatar, personalize your personality style, and configure gender preferences to make Zeno truly yours.",
     color: "text-pink-500",
   },
 ];
