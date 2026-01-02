@@ -21,7 +21,7 @@ function Router() {
   
   return (
     <Switch>
-      <Route path="/" component={Chat} />
+      <Route path="/">{(params) => <Chat />}</Route>
       <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>

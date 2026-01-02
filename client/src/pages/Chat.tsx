@@ -481,6 +481,7 @@ export default function Chat() {
               }
               
               buffer = lines[lines.length - 1];
+            }
             
             if (buffer.trim().startsWith("data: ")) {
               const data = buffer.trim().slice(6).trim();
