@@ -1,3 +1,4 @@
+import { QuickGuide } from "../chat/QuickGuide";
 import zenoLogo from "@assets/image_1767364441563.png";
 import { Plus, User, LogOut, Search, Settings, X, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -514,6 +515,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           </Dialog>
           
           <div className="flex gap-2">
+            <QuickGuide />
             <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
               <DialogTrigger asChild>
                 <Button 

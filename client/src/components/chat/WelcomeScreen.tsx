@@ -1,7 +1,8 @@
-import { Zap, Code, Sparkles, BookOpen, Lightbulb, Brush, Image as ImageIcon, GraduationCap, Video } from "lucide-react";
+import { Zap, Code, Sparkles, BookOpen, Lightbulb, Brush, Image as ImageIcon, GraduationCap, Video, HelpCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/lib/store";
+import { QuickGuide } from "./QuickGuide";
 import zenoLogo from "@assets/image_1767364441563.png";
 
 interface WelcomeScreenProps {
@@ -123,6 +124,7 @@ export function WelcomeScreen({ onSuggestionClick }: WelcomeScreenProps) {
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
+          <QuickGuide />
           {featureTags.map((tag) => (
             <Button
               key={tag.label}
