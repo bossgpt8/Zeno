@@ -747,28 +747,74 @@ export default function Settings() {
               <h2 className="text-2xl font-bold">About</h2>
 
               <div className="space-y-8">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">About</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed text-justify">
-                    The Zeno team is dedicated to pursuing artificial general intelligence (AGI) and is focused on building generalist models, including large language models and large multimodal models. Our mission is to create safe, responsible, and intelligent models, making AGI accessible to the global community through open-source initiatives. We have developed a diverse portfolio of AGI models, with our latest release being the Zeno3 series of large language models, officially launched on January 2, 2026. The Zeno3 series includes multiple models of various sizes, featuring both dense models and Mixture-of-Experts (MoE) architectures. We have also introduced specialized models such as Zeno3-Coder for enhanced programming capabilities. In the multimodal domain, we have released Zeno-Image, a 20B parameter image generation foundation model, and its advanced editing counterpart, Zeno-Image-Edit. To enable more sophisticated applications, we have developed the Zeno-Agent framework, leveraging the instruction-following, tool-use, and planning capabilities of our models to create versatile agents. Zeno Chat serves as the primary platform for users and developers to interact with our models, offering comprehensive functionalities such as image and video understanding, image generation, document processing, web search, and tool utilization. We welcome you to explore Zeno Chat and share your valuable feedback with us.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">Feedback email</h3>
-                  <p className="text-sm font-medium">osanisrael2@gmail.com</p>
-                </div>
-
-                <div className="pt-10 flex items-center justify-between border-t border-border/50">
-                  <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
-                    <button className="hover:text-foreground transition-colors">Terms of Service</button>
-                    <button className="hover:text-foreground transition-colors">Privacy Policy</button>
+                <div className="flex flex-col items-center justify-center py-10 space-y-4 bg-muted/30 rounded-3xl border border-border/50">
+                  <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                    <Brain className="w-10 h-10" />
                   </div>
-                  <div className="flex items-center gap-4 text-muted-foreground">
-                    <SiGithub className="w-4 h-4 hover:text-foreground cursor-pointer transition-colors" />
-                    <SiX className="w-4 h-4 hover:text-foreground cursor-pointer transition-colors" />
-                    <SiLinkedin className="w-4 h-4 hover:text-foreground cursor-pointer transition-colors" />
-                    <SiDiscord className="w-4 h-4 hover:text-foreground cursor-pointer transition-colors" />
+                  <div className="text-center space-y-1">
+                    <h3 className="text-2xl font-bold tracking-tight">Zeno AI</h3>
+                    <p className="text-sm text-muted-foreground">Version 2.4.0 (Stable Build)</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">Our Mission</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed text-justify">
+                      Zeno is a next-generation AI platform designed to empower creativity and productivity through advanced language and vision intelligence. Built for individuals and teams who demand high-performance reasoning and seamless interaction, Zeno provides a diverse portfolio of models including Zeno-Max for complex reasoning and Zeno-Coder for specialized programming tasks. Our mission is to make intelligent, responsible models accessible to everyone.
+                    </p>
+                  </div>
+
+                  <Separator className="opacity-50" />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" className="justify-start gap-3 h-12 px-4 rounded-xl bg-muted/20 border-border/50" asChild>
+                      <a href="#" target="_blank">
+                        <Globe className="w-4 h-4 text-blue-500" />
+                        <span className="text-xs font-medium">Official Website</span>
+                      </a>
+                    </Button>
+                    <Button variant="outline" className="justify-start gap-3 h-12 px-4 rounded-xl bg-muted/20 border-border/50" asChild>
+                      <a href="#" target="_blank">
+                        <MessageSquare className="w-4 h-4 text-purple-500" />
+                        <span className="text-xs font-medium">Community Forum</span>
+                      </a>
+                    </Button>
+                    <Button variant="outline" className="justify-start gap-3 h-12 px-4 rounded-xl bg-muted/20 border-border/50" asChild>
+                      <a href="#" target="_blank">
+                        <SiGithub className="w-4 h-4" />
+                        <span className="text-xs font-medium">GitHub Repo</span>
+                      </a>
+                    </Button>
+                    <Button variant="outline" className="justify-start gap-3 h-12 px-4 rounded-xl bg-muted/20 border-border/50" asChild>
+                      <a href="mailto:osanisrael2@gmail.com">
+                        <HelpCircle className="w-4 h-4 text-orange-500" />
+                        <span className="text-xs font-medium">Contact Support</span>
+                      </a>
+                    </Button>
+                  </div>
+
+                  <Separator className="opacity-50" />
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                      <span>Terms of Service</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                      <span>Privacy Policy</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                      <span>Software Licenses</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </div>
+                  </div>
+
+                  <div className="pt-8 text-center">
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
+                      © 2026 Zeno Intelligence Systems. All Rights Reserved.
+                    </p>
                   </div>
                 </div>
               </div>
