@@ -265,78 +265,108 @@ export default function Settings() {
               <h2 className="text-2xl font-bold">Models</h2>
 
               <Accordion type="single" collapsible className="w-full space-y-4">
-                <AccordionItem value="qwen-vl" className="border-none">
-                  <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group data-[state=open]:bg-muted/30">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-primary" />
-                      <span className="font-semibold text-sm">Qwen 2.5 VL 7B</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 px-4 pb-6 space-y-6">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Our best-in-class vision model, excelling at understanding screenshots, UIs, diagrams, and complex visual information.
-                    </p>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-muted/40 p-5 rounded-2xl border border-border/50 space-y-2">
-                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Capabilities:</div>
-                        <div className="text-lg font-bold">Vision + Text</div>
+                {/* Best Models */}
+                <div className="space-y-2">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1">Top Models</h3>
+                  <AccordionItem value="qwen-vl" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group data-[state=open]:bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                        <span className="font-semibold text-sm">Qwen 2.5 VL 7B</span>
                       </div>
-                      <div className="bg-muted/40 p-5 rounded-2xl border border-border/50 space-y-2">
-                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Intelligence Level:</div>
-                        <div className="text-lg font-bold">Advanced VL</div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6 space-y-4">
+                      <p className="text-sm text-muted-foreground leading-relaxed">Best-in-class - understands screenshots, UIs, diagrams</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="flux" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-purple-500" />
+                        <span className="font-semibold text-sm">FLUX.1 Schnell</span>
                       </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Fastest high-quality image generation</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="mistral-small" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-blue-400" />
+                        <span className="font-semibold text-sm">Mistral Small 3.1</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Ultra-efficient with 128K context</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="qwen-coder" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-orange-500" />
+                        <span className="font-semibold text-sm">Qwen 3 Coder</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Specialized for modern code projects</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </div>
 
-                <AccordionItem value="llama-70b" className="border-none">
-                  <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      <span className="font-semibold text-sm">Llama 3.3 70B</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 px-4 pb-6">
-                    <p className="text-sm text-muted-foreground">A highly smart and efficient model for complex reasoning and everyday conversation.</p>
-                  </AccordionContent>
-                </AccordionItem>
+                {/* Text Models */}
+                <div className="space-y-2 pt-4">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1">Text Models</h3>
+                  <AccordionItem value="llama-70b" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-blue-600" />
+                        <span className="font-semibold text-sm">Llama 3.3 70B</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Smart and efficient</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="deepseek-r1" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-green-500" />
+                        <span className="font-semibold text-sm">DeepSeek R1</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Advanced reasoning</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="mimo-flash" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                        <span className="font-semibold text-sm">Xiaomi Mimo V2 Flash</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Fast and capable</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </div>
 
-                <AccordionItem value="deepseek-r1" className="border-none">
-                  <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-green-500" />
-                      <span className="font-semibold text-sm">DeepSeek R1</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 px-4 pb-6">
-                    <p className="text-sm text-muted-foreground">Our flagship reasoning model, optimized for advanced logical tasks and problem solving.</p>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="qwen-coder" className="border-none">
-                  <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-orange-500" />
-                      <span className="font-semibold text-sm">Qwen 3 Coder</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 px-4 pb-6">
-                    <p className="text-sm text-muted-foreground">Specialized for modern software engineering projects and technical documentation.</p>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="flux" className="border-none">
-                  <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-purple-500" />
-                      <span className="font-semibold text-sm">FLUX.1 Schnell</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-4 px-4 pb-6">
-                    <p className="text-sm text-muted-foreground">Our fastest high-quality image generation model.</p>
-                  </AccordionContent>
-                </AccordionItem>
+                {/* Vision Models */}
+                <div className="space-y-2 pt-4">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1">Vision Models</h3>
+                  <AccordionItem value="gemma-3-27b" className="border-none">
+                    <AccordionTrigger className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-muted/50 transition-all hover:no-underline group">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-red-500" />
+                        <span className="font-semibold text-sm">Gemma 3 27B</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4 pb-6">
+                      <p className="text-sm text-muted-foreground">Vision with 131K context</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </div>
               </Accordion>
 
               <div className="flex justify-end gap-3 pt-8 border-t border-border/50">
