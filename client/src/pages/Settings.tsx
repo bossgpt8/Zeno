@@ -96,21 +96,20 @@ export default function Settings() {
   const [editingMemoryContent, setEditingMemoryContent] = useState("");
 
   const handleSave = async () => {
-    const cleanName = (name || "").trim().slice(0, 100);
-    setUserName(cleanName || "User");
-    setUserAvatar(avatar);
-    setUserPersonality(personality);
-    setUserGender(gender);
-    
+    // Save logic handled below
     if (user?.uid) {
       setIsSaving(true);
       try {
         await saveUserProfile(user.uid, {
-          userName: cleanName || "User",
+          userName: (name || "").trim().slice(0, 100) || "User",
           userAvatar: avatar,
           userPersonality: personality,
           userGender: gender,
         });
+        setUserName((name || "").trim().slice(0, 100) || "User");
+        setUserAvatar(avatar);
+        setUserPersonality(personality);
+        setUserGender(gender);
         toast({ title: "Success", description: "Your profile has been saved!" });
       } catch (error) {
         toast({ title: "Error", description: "Failed to save profile.", variant: "destructive" });
