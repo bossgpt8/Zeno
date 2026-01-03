@@ -457,8 +457,6 @@ export default function Chat() {
           const decoder = new TextDecoder();
 
           try {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
             let buffer = "";
 
             while (true) {
