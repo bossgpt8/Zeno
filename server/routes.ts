@@ -145,6 +145,7 @@ When using web search results, mention your sources.`;
       res.setHeader("Cache-Control", "no-cache, no-transform");
       res.setHeader("Connection", "keep-alive");
       res.setHeader("X-Accel-Buffering", "no"); // Important for Vercel/Nginx proxying
+      res.flushHeaders(); // Explicitly flush headers to bypass some proxies
 
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
@@ -195,6 +196,7 @@ When using web search results, mention your sources.`;
           }
         }
       } finally {
+        res.write("data: [DONE]\n\n");
         res.end();
       }
     } catch (error: any) {
