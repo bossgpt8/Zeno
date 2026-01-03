@@ -123,26 +123,31 @@ export default function Settings() {
   return (
     <div className="flex flex-col md:flex-row h-screen bg-background overflow-hidden">
       {/* Sidebar */}
-      <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border bg-muted/20 flex flex-col flex-shrink-0">
-        <div className="p-4 flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => setLocation("/")}>
+      <div className="w-full md:w-72 border-b md:border-b-0 md:border-r border-border/40 bg-muted/5 flex flex-col flex-shrink-0 backdrop-blur-xl">
+        <div className="p-6 flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setLocation("/")}
+            className="hover-elevate rounded-full bg-background/50 border border-border/50"
+          >
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <h1 className="font-bold text-lg">Settings</h1>
+          <h1 className="font-extrabold text-xl tracking-tight bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">Settings</h1>
         </div>
         
-        <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible px-2 pb-2 md:pb-0 space-x-1 md:space-x-0 md:space-y-1 no-scrollbar">
+        <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible px-4 pb-4 md:pb-0 space-x-2 md:space-x-0 md:space-y-2 no-scrollbar">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${
                 activeTab === tab.id 
-                  ? "bg-muted text-foreground" 
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]" 
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               }`}
             >
-              <tab.icon className="w-4 h-4 flex-shrink-0" />
+              <tab.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === tab.id ? "animate-pulse" : ""}`} />
               <span>{tab.label}</span>
             </button>
           ))}
@@ -150,75 +155,83 @@ export default function Settings() {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-6 md:py-12 space-y-8 md:space-y-12">
+      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/10">
+        <div className="max-w-3xl mx-auto px-4 md:px-12 py-8 md:py-16 space-y-12 md:space-y-20">
           {activeTab === "general" && (
-            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-2xl font-bold">General</h2>
-
-              {/* Theme/General UI Look */}
-              <div className="space-y-6">
-                <div className="flex items-center justify-between py-2">
-                  <div className="space-y-0.5">
-                    <div className="font-medium text-sm">Theme</div>
-                  </div>
-                  <div className="flex bg-muted/50 p-1 rounded-full border border-border/50">
-                    <Button 
-                      variant={theme === "light" ? "secondary" : "ghost"} 
-                      size="sm" 
-                      onClick={() => setTheme("light")}
-                      className={`rounded-full px-4 h-7 text-xs transition-all ${
-                        theme === "light" ? "bg-background shadow-sm border border-border/50 font-medium" : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Light
-                    </Button>
-                    <Button 
-                      variant={theme === "dark" ? "secondary" : "ghost"} 
-                      size="sm" 
-                      onClick={() => setTheme("dark")}
-                      className={`rounded-full px-4 h-7 text-xs transition-all ${
-                        theme === "dark" ? "bg-background shadow-sm border border-border/50 font-medium" : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Dark
-                    </Button>
-                  </div>
-                </div>
-                
-                <Separator className="opacity-50" />
-
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium text-sm">Language</div>
-                  </div>
-                  <Select defaultValue="en">
-                    <SelectTrigger className="w-[180px] bg-transparent border-0 hover:bg-muted/30 transition-colors text-sm text-right justify-end gap-2">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">English (US)</SelectItem>
-                      <SelectItem value="fr">Français</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Separator className="opacity-50" />
-
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="font-medium text-sm">Voice</div>
-                  </div>
-                  <Button variant="ghost" className="text-sm text-muted-foreground hover:text-foreground gap-2 h-auto py-1 px-2">
-                    Katerina <ChevronRight className="w-3 h-3" />
-                  </Button>
-                </div>
+            <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="space-y-2">
+                <h2 className="text-4xl font-black tracking-tighter">General</h2>
+                <p className="text-muted-foreground">Adjust the fundamental look and feel of Zeno.</p>
               </div>
 
-              <div className="flex justify-end gap-3 pt-8 border-t border-border/50">
-                <Button variant="ghost" onClick={() => setLocation("/")} className="text-sm">Cancel</Button>
-                <Button onClick={handleSave} disabled={isSaving} className="text-sm">
-                  {isSaving ? "Saving..." : "Save Changes"}
+              <Card className="p-8 border-border/40 bg-card/50 backdrop-blur-md shadow-2xl shadow-foreground/5 rounded-3xl space-y-8">
+                {/* Theme/General UI Look */}
+                <div className="space-y-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="font-bold text-base tracking-tight">App Theme</div>
+                      <div className="text-xs text-muted-foreground">Choose your preferred visual mode.</div>
+                    </div>
+                    <div className="flex bg-muted/30 p-1.5 rounded-2xl border border-border/20 backdrop-blur-sm self-start sm:self-auto">
+                      <Button 
+                        variant={theme === "light" ? "secondary" : "ghost"} 
+                        size="sm" 
+                        onClick={() => setTheme("light")}
+                        className={`rounded-xl px-6 h-9 text-xs transition-all duration-300 ${
+                          theme === "light" ? "bg-background shadow-xl font-bold" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        Light
+                      </Button>
+                      <Button 
+                        variant={theme === "dark" ? "secondary" : "ghost"} 
+                        size="sm" 
+                        onClick={() => setTheme("dark")}
+                        className={`rounded-xl px-6 h-9 text-xs transition-all duration-300 ${
+                          theme === "dark" ? "bg-background shadow-xl font-bold" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        Dark
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <Separator className="bg-border/10" />
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="font-bold text-base tracking-tight">Display Language</div>
+                      <div className="text-xs text-muted-foreground">Set your primary communication language.</div>
+                    </div>
+                    <Select defaultValue="en">
+                      <SelectTrigger className="w-full sm:w-[180px] bg-muted/20 border-border/20 hover:bg-muted/30 transition-all rounded-xl h-10 font-medium">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-border/20 backdrop-blur-xl">
+                        <SelectItem value="en">English (US)</SelectItem>
+                        <SelectItem value="fr">Français</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Separator className="bg-border/10" />
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="font-bold text-base tracking-tight">Assistant Voice</div>
+                      <div className="text-xs text-muted-foreground">Select a voice for audio interactions.</div>
+                    </div>
+                    <Button variant="outline" className="w-full sm:w-auto rounded-xl border-border/20 hover:bg-muted/30 font-bold h-10 gap-3 group">
+                      Katerina <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+
+              <div className="flex items-center justify-between pt-4">
+                <Button variant="link" onClick={() => setLocation("/")} className="text-muted-foreground hover:text-foreground font-semibold px-0">Discard changes</Button>
+                <Button onClick={handleSave} disabled={isSaving} className="rounded-2xl px-8 h-12 font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  {isSaving ? "Syncing..." : "Save Changes"}
                 </Button>
               </div>
             </div>
