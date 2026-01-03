@@ -121,9 +121,9 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen bg-background overflow-hidden">
       {/* Sidebar */}
-      <div className="w-64 border-r border-border bg-muted/20 flex flex-col">
+      <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-border bg-muted/20 flex flex-col flex-shrink-0">
         <div className="p-4 flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={() => setLocation("/")}>
             <ArrowLeft className="w-4 h-4" />
@@ -131,19 +131,19 @@ export default function Settings() {
           <h1 className="font-bold text-lg">Settings</h1>
         </div>
         
-        <nav className="flex-1 px-2 space-y-1">
+        <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible px-2 pb-2 md:pb-0 space-x-1 md:space-x-0 md:space-y-1 no-scrollbar">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.id 
                   ? "bg-muted text-foreground" 
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               }`}
             >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
+              <tab.icon className="w-4 h-4 flex-shrink-0" />
+              <span>{tab.label}</span>
             </button>
           ))}
         </nav>
@@ -151,7 +151,7 @@ export default function Settings() {
 
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-8 py-12 space-y-12">
+        <div className="max-w-3xl mx-auto px-4 md:px-8 py-6 md:py-12 space-y-8 md:space-y-12">
           {activeTab === "general" && (
             <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
               <h2 className="text-2xl font-bold">General</h2>
