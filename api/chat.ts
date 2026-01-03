@@ -59,6 +59,18 @@ RESPONSE STYLE:
 
     const messagesWithSystem = [systemMessage, ...messages];
 
+    // Add a specific instruction if the last message is about identity
+    const lastMessage = messages[messages.length - 1];
+    const isIdentityQuery = lastMessage && typeof lastMessage.content === 'string' && 
+      /who are you|what is your name|who created you|who made you/i.test(lastMessage.content);
+    
+    if (isIdentityQuery) {
+      messagesWithSystem.push({
+        role: 'system',
+        content: "The user is asking about your identity. Provide a warm, detailed response that shares your name (Zeno) and a bit about your helpful nature, while keeping it conversational. Don't be too brief."
+      });
+    }
+
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {

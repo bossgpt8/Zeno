@@ -119,7 +119,19 @@ When using web search results, mention your sources.`;
 
       // Filter out any messages with invalid content to prevent API errors
       const validMessages = messages.filter(m => m && (typeof m.content === 'string' || Array.isArray(m.content)));
-      const messagesWithSystem = [systemMessage, ...validMessages];
+    const messagesWithSystem = [systemMessage, ...validMessages];
+
+      // Add a specific instruction if the last message is about identity
+      const lastMessage = validMessages[validMessages.length - 1];
+      const isIdentityQuery = lastMessage && typeof lastMessage.content === 'string' && 
+        /who are you|what is your name|who created you|who made you/i.test(lastMessage.content);
+      
+      if (isIdentityQuery) {
+        messagesWithSystem.push({
+          role: "system",
+          content: "The user is asking about your identity. Provide a warm, detailed response that shares your name (Zeno) and a bit about your helpful nature, while keeping it conversational. Don't be too brief."
+        });
+      }
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
