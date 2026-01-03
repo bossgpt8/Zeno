@@ -753,12 +753,13 @@ function ChatContent({
       <NameModal
         open={showNameModal}
         onClose={() => setShowNameModal(false)}
+        onSetName={(name) => setUserName(name)}
       />
 
       <ProfileModal
         open={showProfileModal}
         onClose={() => setShowProfileModal(false)}
-        onSave={handleSaveProfile}
+        onSaveProfile={handleSaveProfile}
       />
 
       <VoiceChatModal
