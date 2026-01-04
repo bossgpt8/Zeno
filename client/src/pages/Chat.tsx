@@ -266,6 +266,10 @@ export default function Chat() {
     return AI_MODELS.image.some((m) => m.id === modelId);
   };
 
+  const getActiveBranch = useCallback(() => {
+    return messages;
+  }, [messages]);
+
   const handleSendMessage = async (content: string, images: string[]) => {
     if (!content.trim() && images.length === 0) return;
 
@@ -699,7 +703,7 @@ export default function Chat() {
                         onSpeak={voiceEnabled ? speakText : undefined}
                         onRegenerate={
                           message.role === "assistant" &&
-                          message.id === messages[messages.length - 1]?.id
+                          message.id === getActiveBranch()[getActiveBranch().length - 1]?.id
                             ? handleRegenerate
                             : undefined
                         }
