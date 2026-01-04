@@ -48,6 +48,17 @@ const AVATAR_OPTIONS = [
   { id: "avatar-6", label: "Avatar 6", image: avatar6 },
 ];
 
+const SUPPORTED_MODELS = [
+  { id: "qwen/qwen-2.5-vl-7b-instruct:free", label: "Qwen 2.5 VL 7B", description: "Vision specialist. Understands images, code, and documents.", tags: ["Vision", "Free"] },
+  { id: "qwen/qwen3-coder:free", label: "Qwen Coder 3", description: "Expert at writing and debugging code.", tags: ["Coding", "Free"] },
+  { id: "mistralai/mistral-small-3.1-24b-instruct:free", label: "Mistral Small 3.1", description: "Balanced performance for general reasoning.", tags: ["General", "Free"] },
+  { id: "deepseek/deepseek-r1:free", label: "DeepSeek R1", description: "Deep reasoning and brainstorming expert.", tags: ["Reasoning", "Free"] },
+  { id: "black-forest-labs/FLUX.1-schnell", label: "FLUX.1 Schnell", description: "Ultra-fast high-quality image generation.", tags: ["Images"] },
+  { id: "nvidia/nemotron-nano-12b-v2-vl:free", label: "Nemotron Nano 12B", description: "Lightweight vision and video understanding.", tags: ["Video", "Free"] },
+  { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B", description: "State-of-the-art reasoning and knowledge.", tags: ["Powerful", "Free"] },
+  { id: "google/gemma-3-27b-it:free", label: "Gemma 3 27B", description: "Google's latest lightweight and fast model.", tags: ["Fast", "Free"] },
+];
+
 export default function Settings() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -303,21 +314,40 @@ export default function Settings() {
                 <p className="text-muted-foreground">Select and configure the AI brains powering Zeno.</p>
               </div>
 
-              <Accordion type="single" collapsible className="w-full space-y-6">
+              <Accordion type="single" collapsible className="w-full space-y-4">
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-2">Core Intelligence</h3>
-                  <AccordionItem value="qwen-vl" className="border-none">
-                    <AccordionTrigger className="flex items-center gap-3 py-4 px-6 rounded-[2rem] hover:bg-primary/5 transition-all hover:no-underline group data-[state=open]:bg-primary/10 border border-transparent data-[state=open]:border-primary/20">
-                      <div className="flex items-center gap-4">
-                        <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(var(--primary),0.5)]" />
-                        <span className="font-bold text-base tracking-tight">Qwen 2.5 VL 7B</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-4 px-8 pb-8 space-y-3">
-                      <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">Vision specialist</div>
-                      <p className="text-sm text-muted-foreground leading-relaxed font-medium">Understands the world through images, code, and documents with incredible precision.</p>
-                    </AccordionContent>
-                  </AccordionItem>
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-2">Available Intelligence</h3>
+                  {SUPPORTED_MODELS.map((model) => (
+                    <AccordionItem key={model.id} value={model.id} className="border-none">
+                      <AccordionTrigger className="flex items-center gap-3 py-4 px-6 rounded-[2rem] hover:bg-primary/5 transition-all hover:no-underline group data-[state=open]:bg-primary/10 border border-transparent data-[state=open]:border-primary/20">
+                        <div className="flex items-center gap-4 text-left">
+                          <div className={`w-3 h-3 rounded-full ${model.id === "qwen/qwen-2.5-vl-7b-instruct:free" ? "bg-primary shadow-[0_0_12px_rgba(var(--primary),0.5)]" : "bg-muted-foreground/30"}`} />
+                          <span className="font-bold text-base tracking-tight">{model.label}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-4 px-8 pb-8 space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          {model.tags.map(tag => (
+                            <div key={tag} className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">
+                              {tag}
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed font-medium">{model.description}</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="rounded-xl h-9 px-6 font-bold border-primary/20 hover:bg-primary/10 text-primary"
+                          onClick={() => {
+                            // Model selection logic can be added to store if needed
+                            toast({ title: "Model Selected", description: `${model.label} is now active.` });
+                          }}
+                        >
+                          Select Model
+                        </Button>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
                 </div>
               </Accordion>
 
