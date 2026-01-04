@@ -443,8 +443,8 @@ export default function Chat() {
             messages: chatMessages,
             model: currentModel,
             customPrompt: customSystemPrompt,
-            userName,
-            userGender,
+            userName: userName, // Use the correct userName from store
+            userGender: userGender,
             enableWebSearch: searchEnabled,
             thinkingEnabled: thinkingEnabled,
             memories: useChatStore.getState().memories.map(m => m.content),
@@ -649,175 +649,68 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-background overflow-hidden relative">
-      <AppSidebar 
-        isOpen={sidebarOpen} 
-        onClose={() => setSidebarOpen(false)} 
-        onStartTutorial={() => {
-          setForceShowTutorial(true);
-          setSidebarOpen(false);
-        }}
-      />
-
-      <div className="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
-        {(!hasSeenTutorial || forceShowTutorial) && hasSeenAuthPrompt && (
-          <OnboardingTutorial onComplete={() => {
-            setHasSeenTutorial(true);
-            setForceShowTutorial(false);
-          }} />
-        )}
-        <div className="flex-shrink-0 sticky top-0 z-40 bg-background border-b border-border">
-          <ChatHeader
-            currentModel={currentModel}
-            voiceEnabled={voiceEnabled}
-            onToggleVoice={() => setShowVoiceChat(true)}
-            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          />
-        </div>
-
-        <div className="flex-1 relative overflow-hidden">
-          <div
-            ref={scrollAreaRef}
-            className="h-full overflow-y-auto"
-            onScroll={handleScroll}
-          >
-            <div className="w-full px-4 py-4 md:py-6">
-              <div className="max-w-2xl mx-auto">
-                {messages.length === 0 ? (
-                  <WelcomeScreen
-                    onSuggestionClick={(prompt) => handleSendMessage(prompt, [])}
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+      <AppSidebar />
+      
+      <main className="flex-1 flex flex-col relative min-w-0">
+        <ChatHeader />
+        
+        <ScrollArea 
+          className="flex-1 px-4 md:px-0" 
+          ref={scrollAreaRef}
+          onScroll={handleScroll}
+        >
+          <div className="max-w-3xl mx-auto py-8 space-y-8">
+            {messages.length === 0 ? (
+              <WelcomeScreen onSelectPrompt={(p) => handleSendMessage(p, [])} />
+            ) : (
+              <div className="space-y-8">
+                {messages.map((message, index) => (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    isLast={index === messages.length - 1}
                   />
-                ) : (
-                  <>
-                    {messages.map((message) => (
-                      <MessageBubble
-                        key={message.id}
-                        message={message}
-                        isUser={message.role === "user"}
-                        userName={userName}
-                        userAvatar={userAvatar}
-                        onSpeak={voiceEnabled ? speakText : undefined}
-                        onRegenerate={
-                          message.role === "assistant" &&
-                          message.id === messages[messages.length - 1]?.id
-                            ? handleRegenerate
-                            : undefined
-                        }
-                        onEdit={
-                          message.role === "user"
-                            ? (id, content) =>
-                                useChatStore.getState().updateMessage(id, content)
-                            : undefined
-                        }
-                      />
-                    ))}
-                    {isGenerating && (
-                <TypingIndicator 
-                  thinkingEnabled={thinkingEnabled} 
-                  searchEnabled={searchEnabled} 
-                />
-              )}
-                    <div ref={messagesEndRef} />
-                  </>
-                )}
+                ))}
+                {isGenerating && <TypingIndicator />}
               </div>
-            </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
+        </ScrollArea>
 
-          {showScrollButton && (
-            <Button
-              size="icon"
-              variant="secondary"
-              className="absolute bottom-20 left-4 rounded-full shadow-lg z-10 hover:scale-110 transition-transform"
-              onClick={scrollToBottom}
-              data-testid="button-scroll-down"
-            >
-              <ChevronDown className="w-5 h-5" />
-            </Button>
-          )}
-        </div>
+        {showScrollButton && (
+          <Button
+            size="icon"
+            variant="secondary"
+            className="absolute bottom-24 right-8 rounded-full shadow-lg z-10 animate-bounce"
+            onClick={scrollToBottom}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        )}
 
-        <div className="flex-shrink-0 sticky bottom-0 z-40 bg-background border-t border-border">
+        <div className="max-w-3xl mx-auto w-full px-4 pb-4">
           <ChatInput
             onSend={handleSendMessage}
-            isGenerating={isGenerating}
-            attachedImages={attachedImages}
-            onAddImage={addImage}
-            onRemoveImage={removeImage}
+            disabled={isGenerating}
             isRecording={isRecording}
             onToggleRecording={handleToggleRecording}
           />
         </div>
-      </div>
-
-      <ChatContent 
-        showOnboarding={showOnboarding}
-        handleCloseOnboarding={handleCloseOnboarding}
-        showNameModal={showNameModal}
-        setShowNameModal={setShowNameModal}
-        showProfileModal={showProfileModal}
-        setShowProfileModal={setShowProfileModal}
-        handleSaveProfile={handleSaveProfile}
-        showVoiceChat={showVoiceChat}
-        setShowVoiceChat={setShowVoiceChat}
-        isRecording={isRecording}
-        handleToggleRecording={handleToggleRecording}
-        setUserName={setUserName}
-        onStartTutorial={() => {
-          setForceShowTutorial(true);
-          setSidebarOpen(false);
-        }}
-      />
+        
+        <VoiceRecordingOverlay isVisible={isRecording} />
+        <OnboardingModal isOpen={showOnboarding} onClose={handleCloseOnboarding} />
+        <NameModal isOpen={showNameModal} onClose={() => setShowNameModal(false)} />
+        <ProfileModal isOpen={showProfileModal} onSave={handleSaveProfile} />
+        <VoiceChatModal isOpen={showVoiceChat} onClose={() => setShowVoiceChat(false)} />
+        <OnboardingTutorial 
+          onStartTutorial={() => {
+            setForceShowTutorial(true);
+            setSidebarOpen(true);
+          }} 
+        />
+      </main>
     </div>
-  );
-}
-
-function ChatContent({ 
-  showOnboarding, 
-  handleCloseOnboarding, 
-  showNameModal, 
-  setShowNameModal, 
-  showProfileModal, 
-  setShowProfileModal, 
-  handleSaveProfile,
-  showVoiceChat,
-  setShowVoiceChat,
-  isRecording,
-  handleToggleRecording,
-  setUserName,
-  onStartTutorial
-}: any) {
-  return (
-    <>
-      <OnboardingModal
-        isOpen={showOnboarding}
-        onClose={handleCloseOnboarding}
-      />
-
-      <NameModal
-        open={showNameModal}
-        onClose={() => setShowNameModal(false)}
-        onSetName={(name) => setUserName(name)}
-      />
-
-      <ProfileModal
-        open={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-        onSaveProfile={handleSaveProfile}
-      />
-
-      <VoiceChatModal
-        isOpen={showVoiceChat}
-        onClose={() => setShowVoiceChat(false)}
-        isRecording={isRecording}
-        onToggleRecording={handleToggleRecording}
-      />
-
-      <AppSidebar 
-        isOpen={false} 
-        onClose={() => {}} 
-        onStartTutorial={onStartTutorial}
-      />
-    </>
   );
 }

@@ -4,6 +4,7 @@ import { z } from 'zod';
 const chatRequestSchema = z.object({
   messages: z.array(z.any()),
   model: z.string(),
+  userName: z.string().optional(),
   customPrompt: z.string().optional(),
   memories: z.array(z.string()).optional(),
 });
@@ -19,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Invalid request body' });
     }
 
-    const { messages, model, customPrompt, memories } = parseResult.data;
+    const { messages, model, customPrompt, userName, memories } = parseResult.data;
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
@@ -29,6 +30,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     let systemContent = `You are Zeno, an intelligent AI assistant.
+
+ABOUT THE USER:
+- Their name is ${userName || 'User'}
+- Use their name naturally in conversation to make it feel personal.
 
 IMPORTANT IDENTITY RULES:
 - Your name is Zeno.
