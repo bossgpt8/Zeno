@@ -675,20 +675,20 @@ export default function Chat() {
           />
         </div>
 
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-hidden flex flex-col">
           <div
             ref={scrollAreaRef}
-            className="h-full overflow-y-auto"
+            className="flex-1 overflow-y-auto"
             onScroll={handleScroll}
           >
-            <div className="w-full px-4 py-4 md:py-6">
-              <div className="max-w-2xl mx-auto">
+            <div className="w-full px-4 py-4 md:py-8">
+              <div className="max-w-3xl mx-auto min-h-full flex flex-col">
                 {messages.length === 0 ? (
                   <WelcomeScreen
                     onSuggestionClick={(prompt) => handleSendMessage(prompt, [])}
                   />
                 ) : (
-                  <>
+                  <div className="space-y-6 pb-32">
                     {messages.map((message) => (
                       <MessageBubble
                         key={message.id}
@@ -712,13 +712,13 @@ export default function Chat() {
                       />
                     ))}
                     {isGenerating && (
-                <TypingIndicator 
-                  thinkingEnabled={thinkingEnabled} 
-                  searchEnabled={searchEnabled} 
-                />
-              )}
+                      <TypingIndicator 
+                        thinkingEnabled={thinkingEnabled} 
+                        searchEnabled={searchEnabled} 
+                      />
+                    )}
                     <div ref={messagesEndRef} />
-                  </>
+                  </div>
                 )}
               </div>
             </div>
@@ -728,7 +728,7 @@ export default function Chat() {
             <Button
               size="icon"
               variant="secondary"
-              className="absolute bottom-20 left-4 rounded-full shadow-lg z-10 hover:scale-110 transition-transform"
+              className="absolute bottom-32 right-4 md:right-8 rounded-full shadow-lg z-10 hover:scale-110 transition-transform border border-border/50"
               onClick={scrollToBottom}
               data-testid="button-scroll-down"
             >

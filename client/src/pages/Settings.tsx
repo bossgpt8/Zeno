@@ -145,62 +145,62 @@ export default function Settings() {
   return (
     <div className="flex flex-col md:flex-row h-screen bg-background overflow-hidden">
       {/* Sidebar */}
-      <div className="w-full md:w-72 border-b md:border-b-0 md:border-r border-border/40 bg-muted/5 flex flex-col flex-shrink-0 backdrop-blur-xl">
-        <div className="p-6 flex items-center gap-3">
+      <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-border/40 bg-muted/5 flex flex-col flex-shrink-0 backdrop-blur-xl z-10">
+        <div className="p-4 md:p-8 flex items-center gap-3 md:gap-4">
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={() => setLocation("/")}
-            className="hover-elevate rounded-full bg-background/50 border border-border/50"
+            className="hover-elevate rounded-full bg-background/50 border border-border/50 h-9 w-9 md:h-10 md:w-10"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 md:w-5 h-5" />
           </Button>
-          <h1 className="font-extrabold text-xl tracking-tight bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">Settings</h1>
+          <h1 className="font-black text-xl md:text-2xl tracking-tight bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">Settings</h1>
         </div>
         
-        <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible px-4 pb-4 md:pb-0 space-x-2 md:space-x-0 md:space-y-2 no-scrollbar">
+        <nav className="flex md:flex-col overflow-x-auto md:overflow-y-auto px-4 md:px-4 pb-4 md:pb-8 space-x-2 md:space-x-0 md:space-y-2 no-scrollbar scroll-smooth">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${
+              className={`flex-shrink-0 md:w-full flex items-center gap-3 px-4 py-3 md:py-3.5 rounded-2xl text-[13px] md:text-sm font-bold transition-all duration-300 ${
                 activeTab === tab.id 
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]" 
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 scale-[1.02] active-elevate-2" 
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground hover-elevate"
               }`}
             >
-              <tab.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === tab.id ? "animate-pulse" : ""}`} />
-              <span>{tab.label}</span>
+              <tab.icon className={`w-4 h-4 md:w-4.5 md:h-4.5 flex-shrink-0 ${activeTab === tab.id ? "animate-pulse" : ""}`} />
+              <span className="whitespace-nowrap">{tab.label}</span>
             </button>
           ))}
         </nav>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/10">
-        <div className="max-w-3xl mx-auto px-4 md:px-12 py-8 md:py-16 space-y-12 md:space-y-20">
+      <div className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-background to-muted/10 relative">
+        <div className="max-w-3xl mx-auto px-4 sm:px-8 md:px-12 py-8 md:py-16 space-y-10 md:space-y-20">
           {activeTab === "general" && (
-            <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="space-y-2">
-                <h2 className="text-4xl font-black tracking-tighter">General</h2>
-                <p className="text-muted-foreground">Adjust the fundamental look and feel of Zeno.</p>
+            <div className="space-y-8 md:space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="space-y-2 md:space-y-3">
+                <h2 className="text-3xl md:text-5xl font-black tracking-tighter">General</h2>
+                <p className="text-sm md:text-base text-muted-foreground font-medium">Adjust the fundamental look and feel of Zeno.</p>
               </div>
 
-              <Card className="p-8 border-border/40 bg-card/50 backdrop-blur-md shadow-2xl shadow-foreground/5 rounded-3xl space-y-8">
+              <Card className="p-5 md:p-10 border-border/40 bg-card/50 backdrop-blur-md shadow-2xl shadow-foreground/5 rounded-[2rem] md:rounded-[2.5rem] space-y-6 md:space-y-10">
                 {/* Theme/General UI Look */}
-                <div className="space-y-8">
+                <div className="space-y-6 md:space-y-10">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="font-bold text-base tracking-tight">App Theme</div>
-                      <div className="text-xs text-muted-foreground">Choose your preferred visual mode.</div>
+                      <div className="font-black text-base md:text-lg tracking-tight">App Theme</div>
+                      <div className="text-xs md:text-sm text-muted-foreground font-medium">Choose your preferred visual mode.</div>
                     </div>
-                    <div className="flex bg-muted/30 p-1.5 rounded-2xl border border-border/20 backdrop-blur-sm self-start sm:self-auto">
+                    <div className="flex bg-muted/30 p-1.5 rounded-2xl border border-border/20 backdrop-blur-sm self-start sm:self-auto shadow-inner">
                       <Button 
                         variant={theme === "light" ? "secondary" : "ghost"} 
                         size="sm" 
                         onClick={() => setTheme("light")}
-                        className={`rounded-xl px-6 h-9 text-xs transition-all duration-300 ${
-                          theme === "light" ? "bg-background shadow-xl font-bold" : "text-muted-foreground hover:text-foreground"
+                        className={`rounded-xl px-4 md:px-8 h-8 md:h-10 text-[11px] md:text-xs transition-all duration-300 ${
+                          theme === "light" ? "bg-background shadow-lg font-black text-foreground" : "text-muted-foreground hover:text-foreground font-bold"
                         }`}
                       >
                         Light
@@ -209,8 +209,8 @@ export default function Settings() {
                         variant={theme === "dark" ? "secondary" : "ghost"} 
                         size="sm" 
                         onClick={() => setTheme("dark")}
-                        className={`rounded-xl px-6 h-9 text-xs transition-all duration-300 ${
-                          theme === "dark" ? "bg-background shadow-xl font-bold" : "text-muted-foreground hover:text-foreground"
+                        className={`rounded-xl px-4 md:px-8 h-8 md:h-10 text-[11px] md:text-xs transition-all duration-300 ${
+                          theme === "dark" ? "bg-background shadow-lg font-black text-foreground" : "text-muted-foreground hover:text-foreground font-bold"
                         }`}
                       >
                         Dark
@@ -222,16 +222,16 @@ export default function Settings() {
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="font-bold text-base tracking-tight">Display Language</div>
-                      <div className="text-xs text-muted-foreground">Set your primary communication language.</div>
+                      <div className="font-black text-base md:text-lg tracking-tight">Display Language</div>
+                      <div className="text-xs md:text-sm text-muted-foreground font-medium">Set your primary communication language.</div>
                     </div>
                     <Select defaultValue="en">
-                      <SelectTrigger className="w-full sm:w-[180px] bg-muted/20 border-border/20 hover:bg-muted/30 transition-all rounded-xl h-10 font-medium">
+                      <SelectTrigger className="w-full sm:w-[200px] bg-muted/20 border-border/20 hover:bg-muted/30 transition-all rounded-xl h-10 md:h-12 font-black">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-border/20 backdrop-blur-xl">
-                        <SelectItem value="en">English (US)</SelectItem>
-                        <SelectItem value="fr">Français</SelectItem>
+                      <SelectContent className="rounded-2xl border-border/20 backdrop-blur-2xl shadow-2xl">
+                        <SelectItem value="en" className="font-bold">English (US)</SelectItem>
+                        <SelectItem value="fr" className="font-bold">Français</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -240,19 +240,19 @@ export default function Settings() {
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="font-bold text-base tracking-tight">Assistant Voice</div>
-                      <div className="text-xs text-muted-foreground">Select a voice for audio interactions.</div>
+                      <div className="font-black text-base md:text-lg tracking-tight">Assistant Voice</div>
+                      <div className="text-xs md:text-sm text-muted-foreground font-medium">Select a voice for audio interactions.</div>
                     </div>
-                    <Button variant="outline" className="w-full sm:w-auto rounded-xl border-border/20 hover:bg-muted/30 font-bold h-10 gap-3 group">
-                      Katerina <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    <Button variant="outline" className="w-full sm:w-auto rounded-xl border-border/20 hover:bg-muted/30 font-black h-10 md:h-12 px-6 gap-3 group">
+                      Katerina <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
               </Card>
 
-              <div className="flex items-center justify-between pt-4">
-                <Button variant="ghost" onClick={() => setLocation("/")} className="text-muted-foreground hover:text-foreground font-semibold px-0">Discard changes</Button>
-                <Button onClick={handleSave} disabled={isSaving} className="rounded-2xl px-8 h-12 font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              <div className="flex items-center justify-between pt-6 border-t border-border/5">
+                <Button variant="ghost" onClick={() => setLocation("/")} className="text-muted-foreground hover:text-foreground font-black px-0 transition-colors">Discard changes</Button>
+                <Button onClick={handleSave} disabled={isSaving} className="rounded-2xl md:rounded-[1.5rem] px-8 md:px-12 h-12 md:h-14 font-black text-base shadow-xl shadow-primary/25 hover:scale-[1.03] active:scale-[0.97] transition-all bg-primary text-primary-foreground">
                   {isSaving ? "Syncing..." : "Save Changes"}
                 </Button>
               </div>
