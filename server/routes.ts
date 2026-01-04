@@ -41,8 +41,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid request body" });
       }
 
-      const { messages, model, customPrompt, userName: bodyUserName = "Friend", userGender = "", enableWebSearch, thinkingEnabled } = parseResult.data;
-      const userName = bodyUserName;
+      const { messages, model, customPrompt, userName = "Friend", userGender = "", enableWebSearch, thinkingEnabled } = parseResult.data;
       const apiKey = process.env.OPENROUTER_API_KEY;
 
       if (!apiKey) {
