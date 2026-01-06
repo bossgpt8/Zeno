@@ -200,7 +200,7 @@ export function MessageBubble({
       className={`group mb-12 animate-in fade-in slide-in-from-bottom-4 duration-300 flex ${isUser ? "justify-end" : "justify-start"}`}
       data-testid={`message-${message.id}`}
     >
-      <div className={`flex items-start gap-4 max-w-2xl ${isUser ? "flex-row-reverse" : "flex-row"}`}>
+      <div className={`flex items-start gap-4 w-full ${isUser ? "flex-row-reverse" : "flex-row"}`}>
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden bg-muted">
           {isUser ? (
             <img 
@@ -219,10 +219,10 @@ export function MessageBubble({
           )}
         </div>
         
-        <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
+        <div className={`flex flex-col flex-1 min-w-0 ${isUser ? "items-end" : "items-start"}`}>
           <div className={isUser 
-            ? "rounded-2xl px-5 py-3 border bg-muted/50 text-foreground rounded-br-none border-border/50 shadow-sm" 
-            : "rounded-2xl px-5 py-3 border bg-muted/30 text-foreground rounded-bl-none border-border/50"
+            ? "rounded-2xl px-5 py-3 border bg-muted/50 text-foreground rounded-br-none border-border/50 shadow-sm max-w-[85%]" 
+            : "rounded-2xl px-5 py-3 border bg-muted/30 text-foreground rounded-bl-none border-border/50 w-full"
           }>
             {message.images && message.images.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-2">
