@@ -88,9 +88,10 @@ Please provide extremely detailed, well-reasoned, and thoughtful responses. Take
       if (enableWebSearch && process.env.TAVILY_API_KEY) {
         try {
           const lastUserMessage = validMessages.filter(m => m.role === "user").pop();
+          const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
           const searchQuery = typeof lastUserMessage?.content === 'string' 
-            ? lastUserMessage.content 
-            : "latest news and current events";
+            ? `${lastUserMessage.content} (Current Date: ${today})` 
+            : `latest news and current events for ${today}`;
 
           const searchResponse = await fetch("https://api.tavily.com/search", {
             method: "POST",
@@ -108,12 +109,21 @@ Please provide extremely detailed, well-reasoned, and thoughtful responses. Take
             const searchData = await searchResponse.json();
             const searchResults = searchData.results.map((r: any) => `- ${r.title}: ${r.content} (Source: ${r.url})`).join("\n");
             
-            systemContent += `\n\nREAL-TIME SEARCH RESULTS for "${searchQuery}":\n${searchResults}\n\nINSTRUCTIONS: Use the search results above to provide a factually accurate and up-to-date response. If the results contain news from today or very recently, prioritize that information. Always cite your sources from the provided URLs.`;
+            systemContent += `\n\nCRITICAL: TODAY'S DATE IS ${today}.
+REAL-TIME SEARCH RESULTS for "${searchQuery}":
+${searchResults}
+
+INSTRUCTIONS: 
+1. The search results above are the absolute truth for current events. 
+2. If the user asks for "latest", "current", or "today's" news, ONLY use the search results above.
+3. IGNORE your internal training data if it contradicts these results or if the results are more recent.
+4. If the results are irrelevant to the user's specific topic, perform a mental check: "Is this information from ${today}?"
+5. Always cite your sources from the provided URLs.`;
             
             // Add search results as a system message to ensure visibility in context
             validMessages.push({
               role: "system",
-              content: `Context from web search: ${searchResults}`
+              content: `Current Date: ${today}\nContext from web search: ${searchResults}`
             });
           }
         } catch (error) {
