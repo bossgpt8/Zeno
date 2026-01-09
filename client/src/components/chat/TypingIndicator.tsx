@@ -6,13 +6,10 @@ interface TypingIndicatorProps {
 }
 
 export function TypingIndicator({ thinkingEnabled, searchEnabled }: TypingIndicatorProps) {
-  let statusText = "Typing...";
-  let Icon = null;
+  let statusText = "Thinking...";
+  let Icon = Sparkles;
 
-  if (thinkingEnabled) {
-    statusText = "Thinking...";
-    Icon = Sparkles;
-  } else if (searchEnabled) {
+  if (searchEnabled) {
     statusText = "Searching the web...";
     Icon = Search;
   }
