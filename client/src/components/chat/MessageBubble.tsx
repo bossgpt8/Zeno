@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@shared/schema";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -60,6 +61,7 @@ export function MessageBubble({
   currentBranch = 0,
   onBranchChange,
 }: MessageBubbleProps) {
+  const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null);
   const [renderedContent, setRenderedContent] = useState("");
