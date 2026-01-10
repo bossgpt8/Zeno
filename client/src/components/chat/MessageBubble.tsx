@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Copy, Check, Volume2, ChevronLeft, ChevronRight, RotateCcw, Pencil, X, Download, Image as ImageIcon, ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from "lucide-react";
+import { Copy, Check, Volume2, ChevronLeft, ChevronRight, RotateCcw, Pencil, X, Download, Image as ImageIcon, ThumbsUp, ThumbsDown, Share2, MoreHorizontal, GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Message } from "@shared/schema";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -391,15 +397,36 @@ export function MessageBubble({
                     <RotateCcw className="w-3.5 h-3.5" />
                   </Button>
                 )}
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7 text-muted-foreground hover:text-foreground transition-colors"
-                  title="More"
-                  data-testid="button-more-actions"
-                >
-                  <MoreHorizontal className="w-3.5 h-3.5" />
-                </Button>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 text-muted-foreground hover:text-foreground transition-colors"
+                      title="More"
+                      data-testid="button-more-actions"
+                    >
+                      <MoreHorizontal className="w-3.5 h-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    {onSpeak && (
+                      <DropdownMenuItem onClick={() => onSpeak(message.content)}>
+                        <Volume2 className="w-4 h-4 mr-2" />
+                        <span>Read aloud</span>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem onClick={handleEdit}>
+                      <Pencil className="w-4 h-4 mr-2" />
+                      <span>Edit</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <GitBranch className="w-4 h-4 mr-2" />
+                      <span>Branch in new chat</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             )}
 
