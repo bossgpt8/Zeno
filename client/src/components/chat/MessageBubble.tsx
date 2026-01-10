@@ -61,6 +61,7 @@ export function MessageBubble({
   onBranchChange,
 }: MessageBubbleProps) {
   const [copied, setCopied] = useState(false);
+  const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null);
   const [renderedContent, setRenderedContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
@@ -361,25 +362,41 @@ export function MessageBubble({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-7 w-7 text-muted-foreground hover:text-foreground transition-colors"
+                  className={`h-7 w-7 transition-colors ${feedback === 'like' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                  onClick={() => setFeedback(feedback === 'like' ? null : 'like')}
                   title="Good response"
                   data-testid="button-like-message"
                 >
-                  <ThumbsUp className="w-3.5 h-3.5" />
+                  <ThumbsUp className={`w-3.5 h-3.5 ${feedback === 'like' ? 'fill-current' : ''}`} />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-7 w-7 text-muted-foreground hover:text-foreground transition-colors"
+                  className={`h-7 w-7 transition-colors ${feedback === 'dislike' ? 'text-destructive' : 'text-muted-foreground hover:text-foreground'}`}
+                  onClick={() => setFeedback(feedback === 'dislike' ? null : 'dislike')}
                   title="Bad response"
                   data-testid="button-dislike-message"
                 >
-                  <ThumbsDown className="w-3.5 h-3.5" />
+                  <ThumbsDown className={`w-3.5 h-3.5 ${feedback === 'dislike' ? 'fill-current' : ''}`} />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
                   className="h-7 w-7 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={async () => {
+                    try {
+                      await navigator.share({
+                        title: 'Zeno Chat Message',
+                        text: message.content,
+                        url: window.location.href
+                      });
+                    } catch (err) {
+                      handleCopy();
+                      toast({
+                        description: "Link copied to clipboard",
+                      });
+                    }
+                  }}
                   title="Share"
                   data-testid="button-share-message"
                 >
