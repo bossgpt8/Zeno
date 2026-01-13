@@ -312,6 +312,18 @@ export default function Chat() {
     // 2. If keywords like "create image" or "generate image" are used, switch to FLUX
     else if (content.toLowerCase().match(/generate (an )?image|create (an )?image|draw|paint|make an image/i)) {
       modelToUse = "black-forest-labs/FLUX.1-schnell";
+      
+      // Enhance prompt with context if referring to a previous image
+      const isRefining = /change|modify|make it|add|remove|instead|more|less/i.test(content);
+      if (isRefining) {
+        const lastAssistantMessage = [...messages].reverse().find(m => m.role === "assistant" && m.content.includes("![Generated Image]"));
+        const lastUserMessage = [...messages].reverse().find(m => m.role === "user" && m.content.toLowerCase().match(/generate|create|make|draw|paint/i));
+        
+        if (lastUserMessage) {
+          content = `Based on the previous image described as "${lastUserMessage.content}", please: ${content}`;
+        }
+      }
+
       useChatStore.getState().setCurrentModel(modelToUse);
       toast({
         description: "Switched to FLUX.1 for image generation. 🎨✨",
