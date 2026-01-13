@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { nanoid } from "nanoid";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { WelcomeScreen } from "@/components/chat/WelcomeScreen";
@@ -89,6 +89,8 @@ export default function Chat() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showVoiceChat, setShowVoiceChat] = useState(false);
   const [forceShowTutorial, setForceShowTutorial] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   // Load user profile and conversations from Firestore on mount
   useEffect(() => {
@@ -118,6 +120,31 @@ export default function Chat() {
     
     loadUserData();
   }, [user?.uid, setUserName, setUserAvatar, setUserPersonality, setUserGender, setConversations]);
+
+  // Handle PWA Install Prompt
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      // Show prompt after a short delay if not already installed
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        setTimeout(() => setShowInstallPrompt(true), 5000);
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+    setShowInstallPrompt(false);
+  };
 
   useEffect(() => {
     if (!hasSeenOnboarding) {
@@ -716,6 +743,29 @@ export default function Chat() {
             setHasSeenTutorial(true);
             setForceShowTutorial(false);
           }} />
+        )}
+
+        {/* PWA Install Prompt */}
+        {showInstallPrompt && (
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="bg-card/95 backdrop-blur-md border border-primary/20 p-4 rounded-2xl shadow-2xl flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Download className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-foreground">Install Zeno AI</h3>
+                <p className="text-xs text-muted-foreground truncate">Add Zeno to your home screen for a better experience! 📱✨</p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button size="sm" onClick={handleInstallApp} className="h-8 text-xs font-medium px-4">
+                  Install
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setShowInstallPrompt(false)} className="h-7 text-[10px] text-muted-foreground font-normal hover:bg-transparent px-0">
+                  Not now
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
         <div className="flex-shrink-0 sticky top-0 z-40 bg-background border-b border-border">
           <ChatHeader
