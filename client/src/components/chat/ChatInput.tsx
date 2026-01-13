@@ -38,7 +38,7 @@ export function ChatInput({
   const [isUploading, setIsUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { thinkingEnabled, setThinkingEnabled, searchEnabled, setSearchEnabled, setCurrentModel } = useChatStore();
+  const { user, thinkingEnabled, setThinkingEnabled, searchEnabled, setSearchEnabled, setCurrentModel, setSidebarOpen } = useChatStore();
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -52,6 +52,13 @@ export function ChatInput({
     if (!trimmed && attachedImages.length === 0) return;
     if (isGenerating) return;
     
+    // Check if user is trying to send an image but not logged in
+    if (!user && attachedImages.length > 0) {
+      useChatStore.getState().setHasSeenAuthPrompt(false);
+      setSidebarOpen(true);
+      return;
+    }
+
     onSend(trimmed, attachedImages);
     setMessage("");
   };
@@ -76,6 +83,14 @@ export function ChatInput({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Lock file selection behind sign-in
+    if (!user) {
+      useChatStore.getState().setHasSeenAuthPrompt(false);
+      setSidebarOpen(true);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
@@ -160,6 +175,13 @@ export function ChatInput({
   ];
 
   const handleTagClick = (modelId: string) => {
+    // Check if model is restricted
+    const isImageModel = AI_MODELS.image.some(m => m.id === modelId);
+    if (isImageModel && !user) {
+      useChatStore.getState().setHasSeenAuthPrompt(false);
+      setSidebarOpen(true);
+      return;
+    }
     setCurrentModel(modelId);
   };
 

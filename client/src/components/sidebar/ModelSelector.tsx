@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Sparkles, ChevronRight } from "lucide-react";
+import { ChevronDown, Sparkles, ChevronRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AI_MODELS } from "@shared/schema";
+import { useChatStore } from "@/lib/store";
 
 interface ModelSelectorProps {
   value: string;
@@ -17,6 +18,7 @@ interface ModelSelectorProps {
 export function ModelSelector({ value, onChange }: ModelSelectorProps) {
   const [open, setOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const { user, setSidebarOpen, setHasSeenAuthPrompt } = useChatStore();
 
   const getModelName = (modelId: string): string => {
     for (const category of Object.values(AI_MODELS)) {
@@ -27,6 +29,15 @@ export function ModelSelector({ value, onChange }: ModelSelectorProps) {
   };
 
   const handleSelectModel = (modelId: string) => {
+    // Check if model is restricted (Image generation)
+    const isImageModel = AI_MODELS.image.some(m => m.id === modelId);
+    if (isImageModel && !user) {
+      setHasSeenAuthPrompt(false);
+      setSidebarOpen(true);
+      setOpen(false);
+      return;
+    }
+
     onChange(modelId);
     setOpen(false);
     setShowAll(false);
@@ -68,25 +79,32 @@ export function ModelSelector({ value, onChange }: ModelSelectorProps) {
             {!showAll ? (
               <>
                 <div className="space-y-1">
-                  {AI_MODELS.best.map((model) => (
-                    <Button
-                      key={model.id}
-                      onClick={() => handleSelectModel(model.id)}
-                      variant={value === model.id ? "secondary" : "ghost"}
-                      className="w-full justify-start h-auto py-3 px-3 text-left flex flex-col items-start gap-1 rounded-lg transition-colors"
-                      data-testid={`button-model-${model.name.toLowerCase().replace(/\s+/g, "-")}`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="font-semibold text-sm">{model.name}</span>
-                        {value === model.id && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        )}
-                      </div>
-                      <span className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                        {model.description}
-                      </span>
-                    </Button>
-                  ))}
+                  {AI_MODELS.best.map((model) => {
+                    const isImageModel = AI_MODELS.image.some(m => m.id === model.id);
+                    const isRestricted = isImageModel && !user;
+                    return (
+                      <Button
+                        key={model.id}
+                        onClick={() => handleSelectModel(model.id)}
+                        variant={value === model.id ? "secondary" : "ghost"}
+                        className="w-full justify-start h-auto py-3 px-3 text-left flex flex-col items-start gap-1 rounded-lg transition-colors relative overflow-hidden"
+                        data-testid={`button-model-${model.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-sm">{model.name}</span>
+                            {isRestricted && <Lock className="w-3 h-3 text-muted-foreground/50" />}
+                          </div>
+                          {value === model.id && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                          {model.description}
+                        </span>
+                      </Button>
+                    );
+                  })}
                 </div>
                 <Button
                   variant="ghost"
@@ -113,19 +131,25 @@ export function ModelSelector({ value, onChange }: ModelSelectorProps) {
                       {category.label}
                     </h3>
                     <div className="space-y-0.5">
-                      {category.models.map((model) => (
-                        <Button
-                          key={model.id}
-                          onClick={() => handleSelectModel(model.id)}
-                          variant={value === model.id ? "secondary" : "ghost"}
-                          className="w-full justify-start h-auto py-2 px-3 text-left flex flex-col items-start gap-0.5 rounded-md transition-colors"
-                        >
-                          <span className="font-medium text-sm">{model.name}</span>
-                          <span className="text-[10px] text-muted-foreground">
-                            {model.description}
-                          </span>
-                        </Button>
-                      ))}
+                      {category.models.map((model) => {
+                        const isImageRestricted = category.key === 'image' && !user;
+                        return (
+                          <Button
+                            key={model.id}
+                            onClick={() => handleSelectModel(model.id)}
+                            variant={value === model.id ? "secondary" : "ghost"}
+                            className="w-full justify-start h-auto py-2 px-3 text-left flex flex-col items-start gap-0.5 rounded-md transition-colors relative overflow-hidden"
+                          >
+                            <div className="flex items-center justify-between w-full">
+                              <span className="font-medium text-sm">{model.name}</span>
+                              {isImageRestricted && <Lock className="w-3 h-3 text-muted-foreground/50" />}
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">
+                              {model.description}
+                            </span>
+                          </Button>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
