@@ -298,10 +298,13 @@ export default function Chat() {
   const handleSendMessage = async (content: string, images: string[]) => {
     if (!content.trim() && images.length === 0) return;
 
-    // Smart Model Switching
+    // Smart Model Switching & Prompt Enhancement
     let modelToUse = currentModel;
-    
-    // 1. If images are attached, switch to Qwen 2.5 VL for analysis
+    let imageGenerationPrompt = content;
+
+    const isExplicitImage = content.toLowerCase().match(/generate (an )?image|create (an )?image|draw|paint|make an image/i);
+    const isRefinement = isImageModel(currentModel) && /change|modify|make it|add|remove|instead|more|less|could you|can you/i.test(content);
+
     if (images.length > 0) {
       modelToUse = "qwen/qwen-2.5-vl-7b-instruct:free";
       useChatStore.getState().setCurrentModel(modelToUse);
@@ -309,25 +312,25 @@ export default function Chat() {
         description: "Switched to Qwen 2.5 VL for image analysis. 👁️✨",
       });
     } 
-    // 2. If keywords like "create image" or "generate image" are used, switch to FLUX
-    else if (content.toLowerCase().match(/generate (an )?image|create (an )?image|draw|paint|make an image/i)) {
+    else if (isExplicitImage || isRefinement) {
       modelToUse = "black-forest-labs/FLUX.1-schnell";
       
       // Enhance prompt with context if referring to a previous image
-      const isRefining = /change|modify|make it|add|remove|instead|more|less/i.test(content);
-      if (isRefining) {
-        const lastAssistantMessage = [...messages].reverse().find(m => m.role === "assistant" && m.content.includes("![Generated Image]"));
-        const lastUserMessage = [...messages].reverse().find(m => m.role === "user" && m.content.toLowerCase().match(/generate|create|make|draw|paint/i));
-        
-        if (lastUserMessage) {
-          content = `Based on the previous image described as "${lastUserMessage.content}", please: ${content}`;
+      if (isRefinement) {
+        const lastImageRequest = [...messages].reverse().find(m => 
+          m.role === "user" && m.content.toLowerCase().match(/image|create|generate|draw|paint/i)
+        );
+        if (lastImageRequest) {
+          imageGenerationPrompt = `Refine the previous image ("${lastImageRequest.content}") with this change: "${content}". Maintain the same style and subject.`;
         }
       }
 
       useChatStore.getState().setCurrentModel(modelToUse);
-      toast({
-        description: "Switched to FLUX.1 for image generation. 🎨✨",
-      });
+      if (currentModel !== modelToUse) {
+        toast({
+          description: "Switched to FLUX.1 for image generation. 🎨✨",
+        });
+      }
     }
 
     // Create conversation if none exists
@@ -340,7 +343,7 @@ export default function Chat() {
     const userMessage: Message = {
       id: nanoid(),
       role: "user",
-      content,
+      content, // Keep original user text in the UI
       images: images.length > 0 ? images : undefined,
       timestamp: Date.now(),
       parentId: messages.length > 0 ? messages[messages.length - 1].id : null,
@@ -381,7 +384,8 @@ export default function Chat() {
     }
 
     // Generate AI title if first message
-    if (messages.length === 0 && !isImageModel(currentModel)) {
+    const modelForTitle = modelToUse || currentModel;
+    if (messages.length === 0 && !isImageModel(modelForTitle)) {
       (async () => {
         try {
           const titleResponse = await fetch("/api/chat", {
@@ -392,7 +396,7 @@ export default function Chat() {
                 { role: "system", content: "Generate a very short, 2-4 word descriptive title for this conversation based on the user's message. Return ONLY the title text, no quotes or punctuation." },
                 { role: "user", content: content }
               ],
-              model: currentModel,
+              model: modelForTitle,
               max_tokens: 10
             }),
           });
@@ -446,11 +450,11 @@ export default function Chat() {
         }
 
         // Check if using image generation model
-        if (isImageModel(currentModel)) {
+        if (isImageModel(modelToUse)) {
           const response = await fetchWithTimeout("/api/generate-image", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: content, modelId: currentModel }),
+            body: JSON.stringify({ prompt: imageGenerationPrompt, modelId: modelToUse }),
           }, 60000);
 
           const data = await response.json();
@@ -514,7 +518,7 @@ export default function Chat() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               messages: chatMessages,
-              model: currentModel,
+              model: modelToUse,
               customPrompt: customSystemPrompt,
               userName,
               userGender,
@@ -637,8 +641,8 @@ export default function Chat() {
         
         attempt++;
         if (attempt <= maxRetries) {
-          // Add a progressively longer delay between retries
-          const delay = attempt * 2000; // 4s, 6s, 8s...
+          // Slow down retries: 5s, 10s, 15s...
+          const delay = attempt * 5000;
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       } finally {
